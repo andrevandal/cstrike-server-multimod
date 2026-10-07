@@ -3,7 +3,7 @@ de_dust2
 de_dust2_2x2
 de_dust
 de_dust_2x2
-de_inferno_2x2
+de_inferno2x2
 de_aztec
 de_abobora
 cs_assault
@@ -11,11 +11,11 @@ cs_rio
 cs_chaves
 cs_favela
 gg_lego
-gg_aim_dust2
+gg_mini_dust2
 fy_pool_day
 fy_iceworld
 awp_india
 aim_aztec
-zm_toxic_house
+zm_toxic_house_b
 zm_dust2_final
 zm_ice_attack

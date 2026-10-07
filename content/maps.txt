@@ -6,18 +6,18 @@
 
 de_dust2_2x2 https://gamebanana.com/dl/309832
 de_dust_2x2
-de_inferno_2x2
+de_inferno2x2 https://gamebanana.com/dl/405210
 de_abobora
 cs_rio https://gamebanana.com/dl/1052733
 cs_chaves
 # cs_chaves: both GameBanana uploads (dl/274494, dl/908111) reference models\!uplant1.mdl, which crashes HLDS on load.
 cs_favela
 gg_lego https://gamebanana.com/dl/553208
-gg_aim_dust2
+gg_mini_dust2 https://gamebanana.com/dl/372636
 fy_pool_day https://gamebanana.com/dl/616976
 fy_iceworld https://gamebanana.com/dl/427749
 awp_india https://gamebanana.com/dl/1200010
 aim_aztec https://gamebanana.com/dl/294444
-zm_toxic_house
+zm_toxic_house_b https://gamebanana.com/dl/1512406
 zm_dust2_final https://gamebanana.com/dl/318377
 zm_ice_attack https://gamebanana.com/dl/482347
