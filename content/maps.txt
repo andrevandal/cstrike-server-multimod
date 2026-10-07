@@ -7,11 +7,9 @@
 de_dust2_2x2 https://gamebanana.com/dl/309832
 de_dust_2x2
 de_inferno2x2 https://gamebanana.com/dl/405210
-de_abobora
 cs_rio https://gamebanana.com/dl/1052733
-cs_chaves
-# cs_chaves: both GameBanana uploads (dl/274494, dl/908111) reference models\!uplant1.mdl, which crashes HLDS on load.
-cs_favela
+cs_chaves https://gamebanana.com/dl/274494
+# cs_chaves references models\!uplant1.mdl; server/plugins/assets/models/!uplant1.mdl (HL's uplant1.mdl) satisfies it.
 gg_lego https://gamebanana.com/dl/553208
 gg_mini_dust2 https://gamebanana.com/dl/372636
 fy_pool_day https://gamebanana.com/dl/616976

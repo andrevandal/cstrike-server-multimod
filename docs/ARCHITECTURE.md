@@ -74,8 +74,8 @@ Changing mode = changing map: end-of-map vote, `rtv`, `amx_votemap`, or an admin
 
 | Prefix | Example maps | Mode plugins | Cvar overrides |
 |---|---|---|---|
-| `de_` | de_dust2, de_dust2_2x2, de_dust, de_aztec, de_abobora | miscstats, c4countdown, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
-| `cs_` | cs_assault, cs_rio, cs_chaves, cs_favela | miscstats, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
+| `de_` | de_dust2, de_dust2_2x2, de_dust, de_aztec, de_inferno2x2 | miscstats, c4countdown, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
+| `cs_` | cs_assault, cs_rio, cs_chaves | miscstats, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
 | `gg_` | gg_lego, gg_mini_dust2 | ReGG (regg_core + modules), miscstats, gp_grenadetrail | no freeze/buy/money, infinite round, no time limit |
 | `fy_` `aim_` `awp_` | fy_pool_day, fy_iceworld, aim_aztec, awp_india | miscstats, nostalgia_vampire, backweapons, gp_grenadetrail, nostalgia_parachute | no freeze, no buy, 1.5 min rounds, auto-bhop |
 | `zm_` | zm_toxic_house_b, zm_ice_attack, zm_dust2_final | Zombie Plague Special 4.5 (core, classes, extra modes), gp_grenadetrail, nostalgia_parachute | 3 min rounds, no freeze, no buy, auto-bhop |

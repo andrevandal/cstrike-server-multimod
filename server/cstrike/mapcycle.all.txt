@@ -5,11 +5,9 @@ de_dust
 de_dust_2x2
 de_inferno2x2
 de_aztec
-de_abobora
 cs_assault
 cs_rio
 cs_chaves
-cs_favela
 gg_lego
 gg_mini_dust2
 fy_pool_day
