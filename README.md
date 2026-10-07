@@ -20,8 +20,7 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Setup
 
-1. **Plugins:** third-party plugins are vendored. Add the remaining drop-in listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) (`backweapons`) to `server/plugins/` and commit it.
-   Reunion and WHBlocker are fetched at build.
+1. **Plugins:** all required third-party plugins are vendored in [server/plugins/](server/plugins/) at pinned upstream commits. Reunion and WHBlocker are fetched at build.
 2. **Content:** fill the direct download links in [content/maps.txt](content/maps.txt), then run `scripts/bootstrap-content.sh`.
    Stock maps (de_dust2, de_aztec, cs_assault, …) already come with HLDS.
 3. **Env:** `cp .env.example .env` and set at least `RCON_PASSWORD`.
