@@ -17,8 +17,8 @@ START_MAP="${START_MAP:-de_dust2}"
 MAXPLAYERS="${MAXPLAYERS:-32}"
 ADMINS="${ADMINS:-}"
 MODERATORS="${MODERATORS:-}"
-ANTICHEAT_ENABLED="${ANTICHEAT_ENABLED:-0}"
-REUNION_ENABLED="${REUNION_ENABLED:-0}"
+ANTICHEAT_ENABLED="${ANTICHEAT_ENABLED:-1}"
+REUNION_ENABLED="${REUNION_ENABLED:-1}"
 REUNION_SALT="${REUNION_SALT:-}"
 
 ADMIN_FLAGS="abcdefghijklmnopqrstu"
@@ -83,13 +83,25 @@ render_users_ini() {
   } > "$AMXX/configs/users.ini"
 }
 
+resolve_reunion_salt() {
+  [ -n "$REUNION_SALT" ] && return
+  local salt_file="$STATE_DIR/reunion_salt"
+  if [ ! -s "$salt_file" ]; then
+    mkdir -p "$STATE_DIR"
+    head -c 16 /dev/urandom | od -An -tx1 | tr -d ' \n' > "$salt_file"
+    log "generated REUNION_SALT in $salt_file (keep it: changing it changes non-Steam player IDs)"
+  fi
+  REUNION_SALT="$(cat "$salt_file")"
+}
+
 render_metamod_plugins() {
   local plugins="$CSTRIKE/addons/metamod/plugins.ini"
   echo "linux addons/amxmodx/dlls/amxmodx_mm_i386.so" > "$plugins"
 
   if [ "$REUNION_ENABLED" = "1" ]; then
     local reunion="$CSTRIKE/addons/reunion/reunion_mm_i386.so"
-    [ -f "$reunion" ] || die "REUNION_ENABLED=1 but $reunion is missing (see server/plugins/MANIFEST.md)"
+    [ -f "$reunion" ] || die "Reunion is enabled but $reunion is missing (add it per server/plugins/MANIFEST.md or set REUNION_ENABLED=0)"
+    resolve_reunion_salt
     [ "${#REUNION_SALT}" -ge 16 ] || die "REUNION_SALT must have at least 16 characters"
     [[ "$REUNION_SALT" =~ ^[A-Za-z0-9]+$ ]] || die "REUNION_SALT must be alphanumeric"
     [ -f "$CSTRIKE/reunion.cfg" ] || die "reunion.cfg is missing (ships with Reunion, see MANIFEST.md)"
@@ -101,12 +113,9 @@ render_metamod_plugins() {
   if [ "$ANTICHEAT_ENABLED" = "1" ]; then
     local whb candidates=("$CSTRIKE"/addons/whblocker/*_mm_i386.so)
     whb="${candidates[0]}"
-    if [ -f "$whb" ]; then
-      echo "linux ${whb#"$CSTRIKE/"}" >> "$plugins"
-      log "anti-cheat (WHBlocker) enabled"
-    else
-      warn "ANTICHEAT_ENABLED=1 but no addons/whblocker/*_mm_i386.so found; anti-cheat stays off"
-    fi
+    [ -f "$whb" ] || die "anti-cheat is enabled but no addons/whblocker/*_mm_i386.so found (add it per server/plugins/MANIFEST.md or set ANTICHEAT_ENABLED=0)"
+    echo "linux ${whb#"$CSTRIKE/"}" >> "$plugins"
+    log "anti-cheat (WHBlocker) enabled"
   fi
 }
 

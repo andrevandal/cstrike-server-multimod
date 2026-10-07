@@ -10,8 +10,8 @@ A Counter-Strike 1.6 server for friends where the **map prefix picks the game mo
 | Game DLL | **ReGameDLL_CS** | Rebuilt `cs.so`; native cvars (auto-bhop, infinite round, buy rules) replace plugins |
 | Plugin loader | **Metamod-r** | Light, maintained Metamod fork |
 | Scripting | **AMX Mod X 1.10** + **ReAPI** | Admin, votes, stats, per-map plugin loading |
-| Dual protocol (optional) | **Reunion** | Lets non-Steam clients (protocol 47/48) join |
-| Anti-cheat (optional) | **WHBlocker** | Server-side wallhack blocking (doesn't send occluded entities) |
+| Dual protocol (on by default) | **Reunion** | Lets non-Steam clients (protocol 47/48) join |
+| Anti-cheat (on by default) | **WHBlocker** | Server-side wallhack blocking (doesn't send occluded entities) |
 
 Versions are pinned as `ARG`s in `server/Dockerfile`. HLDS itself comes from steamcmd (app 90, `steam_legacy` branch).
 
@@ -50,7 +50,7 @@ The HLDS game loop is single-threaded. Two CPUs leave one core free for 1000 Hz 
 | Managed config (server.cfg, plugin lists, mode cfgs) | `server/cstrike/` → baked into the image | git + redeploy |
 | Third-party plugins / modules | `server/plugins/` → compiled/copied into the image | git + redeploy |
 | Secrets & identity (rcon, password, hostname, FastDL URL, admins) | env vars → `env.cfg`, `users.ini` rendered at boot | Coolify env + restart |
-| Optional modules | `ANTICHEAT_ENABLED`, `REUNION_ENABLED` → metamod `plugins.ini` rendered at boot | Coolify env + restart |
+| Metamod modules (on by default, fail-fast if missing) | `ANTICHEAT_ENABLED`, `REUNION_ENABLED` (default `1`) → metamod `plugins.ini` rendered at boot | Coolify env + restart |
 | Downloadable content | `./content` (host bind) | upload + restart |
 | Runtime state | `./state` (host bind) | the server itself |
 
@@ -97,6 +97,7 @@ AMXX has no database server. State is in flat files, and all of it is in `./stat
 | `amxx/csstats.dat` | `/rank`, `/top15` |
 | `amxx/vault/` | nVault (mod progress, e.g. ZP ammo packs) |
 | `banned.cfg`, `listip.cfg` | SteamID / IP bans |
+| `reunion_salt` | Auto-generated Reunion salt (when `REUNION_SALT` is unset); non-Steam IDs depend on it |
 
 Admins are **not** state: they come from `ADMINS` / `MODERATORS`.
 Logs go to `./logs` and are not backed up. Maps and configs are rebuilt from git and `./content`.
@@ -112,6 +113,7 @@ Logs go to `./logs` and are not backed up. Maps and configs are rebuilt from git
 | Backup runs while the server is up | A write landing mid-tar could make that one snapshot inconsistent | Files are tiny and written at map change; offen's stop-during-backup would need the Docker socket mounted, which isn't worth the exposure |
 | Plugins are drop-in, not fetched at build | Manual step before the first full deploy | `MANIFEST.md` + boot warnings |
 | FastDL bypasses Traefik | Plain HTTP on a public port | Content is public game assets anyway; allowlist plus a root dir with no secrets |
+| Reunion/WHBlocker on by default, fail-fast | No boot until both binaries are committed | Explicit opt-out per toggle; clear boot error |
 | `steam_legacy` HLDS branch | Not the latest Valve build | Most compatible base for ReHLDS; change `HLDS_BETA` to try another |
 
 ## 7. Deviations from the design conversation

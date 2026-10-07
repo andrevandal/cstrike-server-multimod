@@ -33,11 +33,14 @@ Filenames must match the ones in `server/cstrike/addons/amxmodx/configs/` (renam
 `miscstats.amxx` (Quake sounds), `statsx.amxx`, `adminvote.amxx` etc. come with AMXX itself.
 Auto-bunnyhop is native in ReGameDLL (`mp_autobunnyhopping`), so it needs no plugin.
 
-## Metamod modules (optional)
+## Metamod modules (enabled by default)
 
 | Path | Toggle | Source |
 |---|---|---|
-| `addons/reunion/reunion_mm_i386.so` + `reunion.cfg` (cstrike root) | `REUNION_ENABLED=1`, `REUNION_SALT` | dev-cs.ru "Reunion" |
-| `addons/whblocker/*_mm_i386.so` | `ANTICHEAT_ENABLED=1` | dev-cs.ru "WHBlocker" |
+| `addons/reunion/reunion_mm_i386.so` + `reunion.cfg` (cstrike root) | `REUNION_ENABLED` (default `1`), `REUNION_SALT` | dev-cs.ru "Reunion" |
+| `addons/whblocker/*_mm_i386.so` | `ANTICHEAT_ENABLED` (default `1`) | dev-cs.ru "WHBlocker" |
+
+Both are required while enabled: if a binary is missing, the server stops at boot with an error instead of running without it.
+Set the toggle to `0` to opt out.
 
 Only download from these upstreams. Repacked bundles from random forums often ship RCON backdoors.

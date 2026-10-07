@@ -20,6 +20,7 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ## Setup
 
 1. **Plugins:** put the files listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) into `server/plugins/` and commit them.
+   Reunion and WHBlocker are enabled by default, so the server won't start without them (or set their toggles to `0`).
 2. **Content:** download the custom maps (17buddies, GameBanana) into `content/` (see [content/README.md](content/README.md)).
    Stock maps (de_dust2, de_aztec, cs_assault, …) already come with HLDS.
 3. **Env:** `cp .env.example .env` and set at least `RCON_PASSWORD`.
@@ -39,8 +40,8 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 |---|---|
 | Lock / unlock the server | Set `SV_PASSWORD` and restart, or `rcon sv_password "x"` (lasts until the next map change) |
 | Admins / moderators | `ADMINS` / `MODERATORS` = comma-separated SteamIDs, then restart |
-| Anti-cheat | Add WHBlocker to `server/plugins/`, set `ANTICHEAT_ENABLED=1`, restart |
-| Non-Steam clients | Add Reunion, set `REUNION_ENABLED=1` and `REUNION_SALT`, restart |
+| Anti-cheat | On by default (WHBlocker must be in `server/plugins/`); `ANTICHEAT_ENABLED=0` to turn off |
+| Non-Steam clients | On by default (Reunion must be in `server/plugins/`); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
 | Add a map | Drop it in `content/` (+ `.wad`/`.res`), list it in `server/cstrike/mapcycle.all.txt`, redeploy |
 | Check FastDL | `curl -I http://fastdl.vandal.services:8080/maps/cs_rio.bsp` → `200`, no `Location` header |
 | Manual backup | `docker compose exec backup backup` |
