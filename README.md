@@ -39,7 +39,7 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | Task | How |
 |---|---|
 | Lock / unlock the server | Set `SV_PASSWORD` and restart, or `rcon sv_password "x"` (lasts until the next map change) |
-| Admins / moderators | `ADMINS` / `MODERATORS` = comma-separated SteamIDs, then restart |
+| Admins / moderators | `ADMINS` / `MODERATORS` = comma-separated SteamIDs (`STEAM_0:Y:Z`), then restart. Seeded admin: `STEAM_0:1:26191905` (SteamID64 `76561198012649539`) |
 | Anti-cheat | On by default (WHBlocker must be in `server/plugins/`); `ANTICHEAT_ENABLED=0` to turn off |
 | Non-Steam clients | On by default (Reunion must be in `server/plugins/`); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
 | Add a map | Drop it in `content/` (+ `.wad`/`.res`), list it in `server/cstrike/mapcycle.all.txt`, redeploy |

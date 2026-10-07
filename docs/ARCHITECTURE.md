@@ -99,7 +99,7 @@ AMXX has no database server. State is in flat files, and all of it is in `./stat
 | `banned.cfg`, `listip.cfg` | SteamID / IP bans |
 | `reunion_salt` | Auto-generated Reunion salt (when `REUNION_SALT` is unset); non-Steam IDs depend on it |
 
-Admins are **not** state: they come from `ADMINS` / `MODERATORS`.
+Admins are **not** state: they come from `ADMINS` (default `STEAM_0:1:26191905`) / `MODERATORS`.
 Logs go to `./logs` and are not backed up. Maps and configs are rebuilt from git and `./content`.
 
 - **Backup:** `offen/docker-volume-backup` tars `./state` every day at 04:00 into `./backups/cs16-state-<ts>.tar.gz` and keeps 14 days (pruning only touches the `cs16-state-` prefix). The archive is a few MB.
