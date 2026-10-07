@@ -21,11 +21,11 @@ matching that name on **every** map. Mode plugins belong in `server/cstrike/addo
 | `nostalgia_vampire.amxx` | fy_, aim_, awp_ | **in repo** | `scripting/nostalgia_vampire.sma` (cvars `vampire_kill_hp` 15, `vampire_headshot_hp` 30, `vampire_max_hp` 100) |
 | `nostalgia_parachute.amxx` | de_, cs_, fy_, zm_ | **in repo** | `scripting/nostalgia_parachute.sma` (hold E; cvar `parachute_fallspeed` 100; shows `models/parachute.mdl` if present in content) |
 | Reunion | metamod | **fetched at build** | github.com/rehlds/ReUnion release (`REUNION_VERSION`) |
-| `galileo.amxx` | all | to add | github.com/addonszz/Galileo @ `5073cac` |
-| `regg_core`, `regg_balancer`, `regg_controller`, `regg_informer`, `regg_leader`, `regg_map_cleaner`, `regg_notify`, `regg_warmup`, `regg_show_winner` | gg_ | to add | github.com/d3m37r4/regg @ `4f9a3f4` |
-| `bullet_damage`, `say_resetscore`, `gp_grenadetrail`, `c4countdown` | see `plugins*.ini` | to add | github.com/Jessyy/amxx-plugins-sma @ `9acd962` (`say_resetscore` needs `include/amxplus.inc`) |
-| `sank_sounds.amxx` | all | to add | github.com/ZTHawk/HL1_SankSounds @ `ed02c30` (keyword list already in `server/cstrike/.../configs/SND-LIST.CFG`) |
-| `amx_settings_api`, `zombie_plague_special_45`, `zpsp_zombie_classes`, `zpsp_human_classes`, `zp_game_mode_assassin_vs_sniper`, `zp_game_mode_nightmare`, `zpsp_game_mode_remix` | zm_ | to add | github.com/PerfectScrash/ZP-Special-Final @ `0585736` |
+| `galileo.amxx` | all | **in repo** | github.com/addonszz/Galileo @ `5073cac` |
+| `regg_core`, `regg_balancer`, `regg_controller`, `regg_informer`, `regg_leader`, `regg_map_cleaner`, `regg_notify`, `regg_warmup`, `regg_show_winner` | gg_ | **in repo** | github.com/d3m37r4/regg @ `4f9a3f4` |
+| `bullet_damage`, `say_resetscore`, `gp_grenadetrail`, `c4countdown` | see `plugins*.ini` | **in repo** | github.com/Jessyy/amxx-plugins-sma @ `9acd962` (`say_resetscore` needs `include/amxplus.inc`) |
+| `sank_sounds.amxx` | all | **in repo** | github.com/ZTHawk/HL1_SankSounds @ `ed02c30` (keyword list already in `server/cstrike/.../configs/SND-LIST.CFG`) |
+| `amx_settings_api`, `zombie_plague_special_45`, `zpsp_zombie_classes`, `zpsp_human_classes`, `zp_game_mode_assassin_vs_sniper`, `zp_game_mode_nightmare`, `zpsp_game_mode_remix` | zm_ | **in repo** | github.com/PerfectScrash/ZP-Special-Final @ `0585736` |
 | `backweapons.amxx` | de_, cs_, fy_ | drop-in | AlliedModders "Back Weapons" (needs its own `backweapons.mdl` in content) |
 | WHBlocker | metamod (`ANTICHEAT_ENABLED`, default on) | **required drop-in** | dev-cs.ru only: `addons/whblocker/*_mm_i386.so` |
 
