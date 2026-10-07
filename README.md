@@ -20,7 +20,7 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Setup
 
-1. **Plugins:** add the "to add" / drop-in files listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) to `server/plugins/` and commit them.
+1. **Plugins:** third-party plugins are vendored. Add the remaining drop-ins listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) (`backweapons`, WHBlocker) to `server/plugins/` and commit them.
    WHBlocker is enabled by default, so the server won't start without it (or set `ANTICHEAT_ENABLED=0`). Reunion is fetched at build.
 2. **Content:** fill the direct download links in [content/maps.txt](content/maps.txt), then run `scripts/bootstrap-content.sh`.
    Stock maps (de_dust2, de_aztec, cs_assault, …) already come with HLDS.
@@ -33,7 +33,7 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 2. Set the variables from `.env.example` under *Environment Variables* (`RCON_PASSWORD` is required).
 3. DNS: `fastdl.vandal.services` → A record to the server IP. Firewall: open **27015/udp** and **8080/tcp**.
    Don't assign a domain to `fastdl` in Coolify: it has to stay on plain HTTP outside Traefik.
-4. Bootstrap content on the host (only `docker` is needed; the script runs its tools in an Alpine container if they're missing):
+4. Bootstrap content on the host (only `docker` is needed; the script runs its tools in a Debian container with RAR support if they're missing):
    ```bash
    git clone -b claude/awesome-noether-cqdfab https://github.com/andrevandal/cstrike-server-multimod.git /tmp/cs16
    /tmp/cs16/scripts/bootstrap-content.sh /data/coolify/applications/<uuid>/content
