@@ -1,12 +1,17 @@
 FROM debian:bookworm-slim
 
+# Pins are bumped by scripts/update-versions.sh (latest stable releases).
 ARG HLDS_BETA=steam_legacy
-ARG REHLDS_VERSION=3.14.0.857
-ARG REGAMEDLL_VERSION=5.28.0.756
+ARG REHLDS_VERSION=3.15.0.896
+ARG REGAMEDLL_VERSION=5.30.0.814
 ARG METAMOD_R_VERSION=1.3.0.149
-ARG AMXX_VERSION=1.10.0-git5467
-ARG REAPI_VERSION=5.26.0.338
-ARG REUNION_VERSION=0.2.0.34
+ARG AMXX_VERSION=1.10.0-git5486
+ARG REAPI_VERSION=5.29.0.358
+ARG REUNION_VERSION=0.2.0.25
+# WHBlocker is closed-source and dev-cs.ru no longer serves it; take PluginyCS/BasePack's copy at a
+# release commit and refuse anything whose checksum changed.
+ARG BASEPACK_REF=6b92574741cb09ae39076eede326557ff95b7e56
+ARG WHBLOCKER_SHA256=cba69733648518a90718c367634467e14f0055814293be0c7a40b4ac85bc84c1
 
 ENV HLDS_DIR=/opt/hlds \
     LD_LIBRARY_PATH=/opt/hlds
@@ -52,6 +57,11 @@ RUN set -eu; \
     cp "$(find /tmp/pkg -name reunion_mm_i386.so | head -n1)" "$HLDS_DIR/cstrike/addons/reunion/"; \
     cp "$(find /tmp/pkg -name reunion.cfg | head -n1)" "$HLDS_DIR/cstrike/reunion.cfg"; \
     rm -rf /tmp/pkg; \
+    bp="https://raw.githubusercontent.com/PluginyCS/BasePack/$BASEPACK_REF/cstrike/addons/whblocker"; \
+    mkdir -p "$HLDS_DIR/cstrike/addons/whblocker"; \
+    curl -fsSL "$bp/whblocker_mm_i386.so" -o "$HLDS_DIR/cstrike/addons/whblocker/whblocker_mm_i386.so"; \
+    curl -fsSL "$bp/config.ini" -o "$HLDS_DIR/cstrike/addons/whblocker/config.ini"; \
+    echo "$WHBLOCKER_SHA256  $HLDS_DIR/cstrike/addons/whblocker/whblocker_mm_i386.so" | sha256sum -c -; \
     sed -i 's|^gamedll_linux.*|gamedll_linux "addons/metamod/metamod_i386.so"|' "$HLDS_DIR/cstrike/liblist.gam"; \
     chmod +x "$HLDS_DIR/hlds_linux"
 

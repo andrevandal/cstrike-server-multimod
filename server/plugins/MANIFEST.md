@@ -27,7 +27,7 @@ matching that name on **every** map. Mode plugins belong in `server/cstrike/addo
 | `sank_sounds.amxx` | all | **in repo** | github.com/ZTHawk/HL1_SankSounds @ `ed02c30` (keyword list already in `server/cstrike/.../configs/SND-LIST.CFG`) |
 | `amx_settings_api`, `zombie_plague_special_45`, `zpsp_zombie_classes`, `zpsp_human_classes`, `zp_game_mode_assassin_vs_sniper`, `zp_game_mode_nightmare`, `zpsp_game_mode_remix` | zm_ | **in repo** | github.com/PerfectScrash/ZP-Special-Final @ `0585736` |
 | `backweapons.amxx` | de_, cs_, fy_ | drop-in | AlliedModders "Back Weapons" (needs its own `backweapons.mdl` in content) |
-| WHBlocker | metamod (`ANTICHEAT_ENABLED`, default on) | **required drop-in** | dev-cs.ru only: `addons/whblocker/*_mm_i386.so` |
+| WHBlocker | metamod (`ANTICHEAT_ENABLED`, default on) | **fetched at build** | github.com/PluginyCS/BasePack (`BASEPACK_REF`, checked against `WHBLOCKER_SHA256`) |
 
 ### Adding the GitHub-hosted plugins
 

@@ -11,9 +11,9 @@ A Counter-Strike 1.6 server for friends where the **map prefix picks the game mo
 | Plugin loader | **Metamod-r** | Light, maintained Metamod fork |
 | Scripting | **AMX Mod X 1.10** + **ReAPI** | Admin, votes, stats, per-map plugin loading |
 | Dual protocol (on by default) | **Reunion** (official GitHub release, fetched at build) | Lets non-Steam clients (protocol 47/48) join |
-| Anti-cheat (on by default) | **WHBlocker** | Server-side wallhack blocking (doesn't send occluded entities) |
+| Anti-cheat (on by default) | **WHBlocker** (PluginyCS/BasePack copy, fetched at build, SHA-256 checked) | Server-side wallhack blocking (doesn't send occluded entities) |
 
-Versions are pinned as `ARG`s in `server/Dockerfile`. HLDS itself comes from steamcmd (app 90, `steam_legacy` branch).
+Versions are pinned as `ARG`s in `server/Dockerfile`; `scripts/update-versions.sh` bumps them to the latest stable releases. HLDS itself comes from steamcmd (app 90, `steam_legacy` branch).
 
 ## 2. Topology
 
@@ -112,7 +112,7 @@ Logs go to `./logs` and are not backed up. Maps and configs are rebuilt from git
 | Backup runs while the server is up | A write landing mid-tar could make that one snapshot inconsistent | Files are tiny and written at map change; offen's stop-during-backup would need the Docker socket mounted, which isn't worth the exposure |
 | Plugins are drop-in, not fetched at build | Manual step before the first full deploy | `MANIFEST.md` + boot warnings |
 | FastDL bypasses Traefik | Plain HTTP on a public port | Content is public game assets anyway; allowlist plus a root dir with no secrets |
-| WHBlocker on by default, fail-fast | No boot until its binary is committed (dev-cs.ru only) | `ANTICHEAT_ENABLED=0` opt-out; clear boot error |
+| WHBlocker on by default, fail-fast | Closed-source binary; dev-cs.ru no longer serves it, so it comes from PluginyCS/BasePack | Pinned BasePack commit + SHA-256 check at build; `ANTICHEAT_ENABLED=0` opt-out |
 | Jailbreak dropped | No `jb_` mode | No trustworthy maintained source; re-add as a drop-in with its own `plugins-jb.ini` |
 | Own vampire/parachute plugins | Small code to own | ~30/90 lines on ReAPI; parachute keeps the classic "hold E" behaviour without a required model |
 | `steam_legacy` HLDS branch | Not the latest Valve build | Most compatible base for ReHLDS; change `HLDS_BETA` to try another |

@@ -20,8 +20,8 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Setup
 
-1. **Plugins:** third-party plugins are vendored. Add the remaining drop-ins listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) (`backweapons`, WHBlocker) to `server/plugins/` and commit them.
-   WHBlocker is enabled by default, so the server won't start without it (or set `ANTICHEAT_ENABLED=0`). Reunion is fetched at build.
+1. **Plugins:** third-party plugins are vendored. Add the remaining drop-in listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) (`backweapons`) to `server/plugins/` and commit it.
+   Reunion and WHBlocker are fetched at build.
 2. **Content:** fill the direct download links in [content/maps.txt](content/maps.txt), then run `scripts/bootstrap-content.sh`.
    Stock maps (de_dust2, de_aztec, cs_assault, …) already come with HLDS.
 3. **Env:** `cp .env.example .env` and set at least `RCON_PASSWORD`.
@@ -46,11 +46,12 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 |---|---|
 | Lock / unlock the server | Set `SV_PASSWORD` and restart, or `rcon sv_password "x"` (lasts until the next map change) |
 | Admins / moderators | `ADMINS` / `MODERATORS` = comma-separated SteamIDs (`STEAM_0:Y:Z`), then restart. Seeded admin: `STEAM_0:1:26191905` (SteamID64 `76561198012649539`) |
-| Anti-cheat | On by default (WHBlocker must be in `server/plugins/`); `ANTICHEAT_ENABLED=0` to turn off |
+| Anti-cheat | On by default (WHBlocker, fetched at build); `ANTICHEAT_ENABLED=0` to turn off |
 | Non-Steam clients | On by default (Reunion is fetched at build); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
 | Add a map | Add `<map> <url>` to `content/maps.txt` and run the bootstrap; list it in `server/cstrike/mapcycle.all.txt`, redeploy |
 | Check FastDL | `curl -I http://fastdl.vandal.services:8080/maps/cs_rio.bsp` → `200`, no `Location` header |
 | Manual backup | `docker compose exec backup backup` |
 | Restore | `scripts/restore.sh backups/cs16-state-<ts>.tar.gz` (on Coolify: `CSTRIKE_CONTAINER=<name> scripts/restore.sh …`) |
+| Update engine/modules | `scripts/update-versions.sh` bumps the `ARG` pins in `server/Dockerfile` to the latest stable releases (ReHLDS, ReGameDLL, Metamod-r, ReAPI, Reunion, newest AMXX 1.10 build, WHBlocker from the newest PluginyCS/BasePack release). Review the diff, `docker compose build cstrike`, boot it, check logs, commit |
 
 Pinned engine and plugin-loader versions are `ARG`s at the top of `server/Dockerfile`.
