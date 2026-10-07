@@ -1,0 +1,23 @@
+# Custom maps for scripts/bootstrap-content.sh: <map> <direct download url>
+# The URL must point at the file itself (.zip, .rar, .7z or .bsp), not an HTML page.
+# On GameBanana, copy the link from the file's download button (https://gamebanana.com/dl/<id>).
+# Entries without a URL are reported as "no url" and skipped. Stock maps (de_dust2, de_dust,
+# de_aztec, cs_assault) ship with HLDS and are not listed.
+
+de_dust2_2x2
+de_dust_2x2
+de_inferno_2x2
+de_abobora
+cs_rio
+# cs_rio file list (unverified): https://gamebanana.com/mods/download/92362
+cs_chaves
+cs_favela
+gg_lego
+gg_aim_dust2
+fy_pool_day
+fy_iceworld
+awp_india
+aim_aztec
+zm_toxic_house
+zm_dust2_final
+zm_ice_attack

@@ -2,7 +2,7 @@
 
 The classic LAN house atmosphere of the 2000s: a Counter-Strike 1.6 server (ReHLDS + ReGameDLL + Metamod-r + AMX Mod X)
 where the **map prefix picks the game mode**: classic (`de_`/`cs_`), GunGame (`gg_`), floor weapons (`fy_`/`aim_`/`awp_`),
-Jailbreak (`jb_`) and Zombie Plague (`zm_`). Players get RTV, nominations and vote kick/ban.
+and Zombie Plague (`zm_`). Players get RTV, nominations and vote kick/ban.
 
 The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
@@ -15,13 +15,14 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | `fastdl/` | nginx config + MOTD page |
 | `content/` | Custom maps and client assets (not in git) |
 | `state/`, `logs/`, `backups/` | Runtime data (not in git) |
+| `scripts/bootstrap-content.sh` | Download maps from `content/maps.txt` and sync plugin assets into `content/` |
 | `scripts/restore.sh` | Restore a backup |
 
 ## Setup
 
-1. **Plugins:** put the files listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) into `server/plugins/` and commit them.
-   Reunion and WHBlocker are enabled by default, so the server won't start without them (or set their toggles to `0`).
-2. **Content:** download the custom maps (17buddies, GameBanana) into `content/` (see [content/README.md](content/README.md)).
+1. **Plugins:** add the "to add" / drop-in files listed in [server/plugins/MANIFEST.md](server/plugins/MANIFEST.md) to `server/plugins/` and commit them.
+   WHBlocker is enabled by default, so the server won't start without it (or set `ANTICHEAT_ENABLED=0`). Reunion is fetched at build.
+2. **Content:** fill the direct download links in [content/maps.txt](content/maps.txt), then run `scripts/bootstrap-content.sh`.
    Stock maps (de_dust2, de_aztec, cs_assault, …) already come with HLDS.
 3. **Env:** `cp .env.example .env` and set at least `RCON_PASSWORD`.
 4. `docker compose up -d --build`, then `docker compose logs -f cstrike` and look for `WARN` lines about missing maps or plugins.
@@ -32,7 +33,12 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 2. Set the variables from `.env.example` under *Environment Variables* (`RCON_PASSWORD` is required).
 3. DNS: `fastdl.vandal.services` → A record to the server IP. Firewall: open **27015/udp** and **8080/tcp**.
    Don't assign a domain to `fastdl` in Coolify: it has to stay on plain HTTP outside Traefik.
-4. Upload content to the service's bind path: `rsync -av content/ root@host:<bind path>/content/` (Coolify shows the path under *Storages*; usually `/data/coolify/applications/<uuid>/`), then restart `cstrike`.
+4. Bootstrap content on the host (only `docker` is needed; the script runs its tools in an Alpine container if they're missing):
+   ```bash
+   git clone -b claude/awesome-noether-cqdfab https://github.com/andrevandal/cstrike-server-multimod.git /tmp/cs16
+   /tmp/cs16/scripts/bootstrap-content.sh /data/coolify/applications/<uuid>/content
+   ```
+   Coolify shows the bind path under *Storages*. Re-run it after editing `content/maps.txt` (existing maps are skipped; `--force` re-downloads), then restart `cstrike`.
 
 ## Operations
 
@@ -41,8 +47,8 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | Lock / unlock the server | Set `SV_PASSWORD` and restart, or `rcon sv_password "x"` (lasts until the next map change) |
 | Admins / moderators | `ADMINS` / `MODERATORS` = comma-separated SteamIDs (`STEAM_0:Y:Z`), then restart. Seeded admin: `STEAM_0:1:26191905` (SteamID64 `76561198012649539`) |
 | Anti-cheat | On by default (WHBlocker must be in `server/plugins/`); `ANTICHEAT_ENABLED=0` to turn off |
-| Non-Steam clients | On by default (Reunion must be in `server/plugins/`); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
-| Add a map | Drop it in `content/` (+ `.wad`/`.res`), list it in `server/cstrike/mapcycle.all.txt`, redeploy |
+| Non-Steam clients | On by default (Reunion is fetched at build); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
+| Add a map | Add `<map> <url>` to `content/maps.txt` and run the bootstrap; list it in `server/cstrike/mapcycle.all.txt`, redeploy |
 | Check FastDL | `curl -I http://fastdl.vandal.services:8080/maps/cs_rio.bsp` → `200`, no `Location` header |
 | Manual backup | `docker compose exec backup backup` |
 | Restore | `scripts/restore.sh backups/cs16-state-<ts>.tar.gz` (on Coolify: `CSTRIKE_CONTAINER=<name> scripts/restore.sh …`) |

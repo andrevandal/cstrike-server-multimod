@@ -15,5 +15,6 @@ content/
 └── gfx/env/              # skyboxes (.tga)
 ```
 
-Not tracked by git (maps are large third-party files). Upload them to the server's bind path, e.g.
-`rsync -av content/ user@host:/data/coolify/services/<uuid>/content/`.
+Not tracked by git (maps are large third-party files), except `maps.txt`: the list of custom maps and their
+direct download links. `scripts/bootstrap-content.sh [content_dir]` downloads them, merges each archive's
+`cstrike/` layout into this folder, and copies plugin assets from `server/plugins/assets/`.

@@ -10,7 +10,7 @@ A Counter-Strike 1.6 server for friends where the **map prefix picks the game mo
 | Game DLL | **ReGameDLL_CS** | Rebuilt `cs.so`; native cvars (auto-bhop, infinite round, buy rules) replace plugins |
 | Plugin loader | **Metamod-r** | Light, maintained Metamod fork |
 | Scripting | **AMX Mod X 1.10** + **ReAPI** | Admin, votes, stats, per-map plugin loading |
-| Dual protocol (on by default) | **Reunion** | Lets non-Steam clients (protocol 47/48) join |
+| Dual protocol (on by default) | **Reunion** (official GitHub release, fetched at build) | Lets non-Steam clients (protocol 47/48) join |
 | Anti-cheat (on by default) | **WHBlocker** | Server-side wallhack blocking (doesn't send occluded entities) |
 
 Versions are pinned as `ARG`s in `server/Dockerfile`. HLDS itself comes from steamcmd (app 90, `steam_legacy` branch).
@@ -51,7 +51,7 @@ The HLDS game loop is single-threaded. Two CPUs leave one core free for 1000 Hz 
 | Third-party plugins / modules | `server/plugins/` → compiled/copied into the image | git + redeploy |
 | Secrets & identity (rcon, password, hostname, FastDL URL, admins) | env vars → `env.cfg`, `users.ini` rendered at boot | Coolify env + restart |
 | Metamod modules (on by default, fail-fast if missing) | `ANTICHEAT_ENABLED`, `REUNION_ENABLED` (default `1`) → metamod `plugins.ini` rendered at boot | Coolify env + restart |
-| Downloadable content | `./content` (host bind) | upload + restart |
+| Downloadable content | `./content` (host bind), filled by `scripts/bootstrap-content.sh` from `content/maps.txt` + `server/plugins/assets/` | bootstrap + restart |
 | Runtime state | `./state` (host bind) | the server itself |
 
 ### Boot sequence (`server/entrypoint.sh`)
@@ -68,21 +68,20 @@ The HLDS game loop is single-threaded. Two CPUs leave one core free for 1000 Hz 
 
 `server.cfg` runs on **every** map load and sets the full classic baseline. AMXX then runs
 `configs/maps/prefix_<prefix>.cfg` for overrides and loads `configs/maps/plugins-<prefix>.ini` on top of the global `plugins.ini`.
-So a mode's cvars never leak into the next map (e.g. `sv_alltalk 0` from jb_).
+So a mode's cvars never leak into the next map (e.g. `mp_round_infinite 1` from gg_).
 
 Changing mode = changing map: end-of-map vote, `rtv`, `amx_votemap`, or an admin/moderator via `amx_map` / `amxmodmenu`.
 
 | Prefix | Example maps | Mode plugins | Cvar overrides |
 |---|---|---|---|
-| `de_` | de_dust2, de_dust2_2x2, de_dust, de_aztec, de_abobora | miscstats, c4_timer, backweapons, grenade_trail, parachute | auto-bhop |
-| `cs_` | cs_assault, cs_rio, cs_chaves, cs_favela | miscstats, backweapons, grenade_trail, parachute | auto-bhop |
-| `gg_` | gg_lego, gg_aim_dust2 | gungame, miscstats, grenade_trail | no freeze/buy/money, infinite round, no time limit |
-| `fy_` `aim_` `awp_` | fy_pool_day, fy_iceworld, aim_aztec, awp_india | miscstats, vampire, backweapons, grenade_trail, parachute | no freeze, no buy, 1.5 min rounds, auto-bhop |
-| `jb_` (not in rotation; admin `amx_map` only) | jb_jail_break, jb_arctic | jailbreak, miscstats, parachute | 4 min rounds, no team balance, `sv_alltalk 0`, **no bhop** |
-| `zm_` | zm_toxic_house, zm_ice_attack, zm_dust2_final | zombie_plague40, grenade_trail, parachute | 3 min rounds, no freeze, no buy, auto-bhop |
+| `de_` | de_dust2, de_dust2_2x2, de_dust, de_aztec, de_abobora | miscstats, c4countdown, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
+| `cs_` | cs_assault, cs_rio, cs_chaves, cs_favela | miscstats, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
+| `gg_` | gg_lego, gg_aim_dust2 | ReGG (regg_core + modules), miscstats, gp_grenadetrail | no freeze/buy/money, infinite round, no time limit |
+| `fy_` `aim_` `awp_` | fy_pool_day, fy_iceworld, aim_aztec, awp_india | miscstats, nostalgia_vampire, backweapons, gp_grenadetrail, nostalgia_parachute | no freeze, no buy, 1.5 min rounds, auto-bhop |
+| `zm_` | zm_toxic_house, zm_ice_attack, zm_dust2_final | Zombie Plague Special 4.5 (core, classes, extra modes), gp_grenadetrail, nostalgia_parachute | 3 min rounds, no freeze, no buy, auto-bhop |
 
 Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`, `/top15`), `restmenu`,
-**Galileo** (end-of-map vote, `rtv` at 51%, `nominate`), `bullet_damage`, `resetscore` (`/rs`), `sank_sounds`.
+**Galileo** (end-of-map vote, `rtv` at 51%, `nominate`), `bullet_damage`, `say_resetscore` (`/rs`), `sank_sounds` (keywords in `configs/SND-LIST.CFG`).
 `mapchooser.amxx` and `nextmap.amxx` are disabled because Galileo replaces them.
 
 **Player votes.** `amx_default_access "jz"` gives every player the ADMIN_VOTE flag, so anyone can run the stock
@@ -113,7 +112,9 @@ Logs go to `./logs` and are not backed up. Maps and configs are rebuilt from git
 | Backup runs while the server is up | A write landing mid-tar could make that one snapshot inconsistent | Files are tiny and written at map change; offen's stop-during-backup would need the Docker socket mounted, which isn't worth the exposure |
 | Plugins are drop-in, not fetched at build | Manual step before the first full deploy | `MANIFEST.md` + boot warnings |
 | FastDL bypasses Traefik | Plain HTTP on a public port | Content is public game assets anyway; allowlist plus a root dir with no secrets |
-| Reunion/WHBlocker on by default, fail-fast | No boot until both binaries are committed | Explicit opt-out per toggle; clear boot error |
+| WHBlocker on by default, fail-fast | No boot until its binary is committed (dev-cs.ru only) | `ANTICHEAT_ENABLED=0` opt-out; clear boot error |
+| Jailbreak dropped | No `jb_` mode | No trustworthy maintained source; re-add as a drop-in with its own `plugins-jb.ini` |
+| Own vampire/parachute plugins | Small code to own | ~30/90 lines on ReAPI; parachute keeps the classic "hold E" behaviour without a required model |
 | `steam_legacy` HLDS branch | Not the latest Valve build | Most compatible base for ReHLDS; change `HLDS_BETA` to try another |
 
 ## 7. Deviations from the design conversation

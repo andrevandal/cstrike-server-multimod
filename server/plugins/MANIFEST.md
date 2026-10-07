@@ -1,46 +1,46 @@
-# Drop-in plugins
+# Plugins
 
-This folder is an overlay of `cstrike/` that gets copied into the image at build time:
+`server/plugins/` is an overlay of `cstrike/` copied into the image at build time:
 
 - `addons/amxmodx/scripting/*.sma` → compiled with the bundled `amxxpc` (the build fails if a compile fails).
   Extra `.inc` files go in `addons/amxmodx/scripting/include/`.
-- `addons/amxmodx/plugins/*.amxx` → copied as-is (when you only have a binary).
-- `addons/amxmodx/configs/*` and `addons/amxmodx/data/lang/*` → each plugin's own cfg and dictionary files.
-- **Client assets** (`sound/`, `models/`, `sprites/`) go in `/content`, not here, so FastDL can serve them.
+- `addons/amxmodx/plugins/*.amxx` → copied as-is.
+- `addons/amxmodx/configs/*`, `addons/amxmodx/data/lang/*` → each plugin's own cfg and dictionary files.
+- `assets/` (laid out like `cstrike/`) → **not** in the image; `scripts/bootstrap-content.sh` copies it into
+  `content/` so FastDL serves it and the server links it.
 
-Commit the files here: Coolify builds from git. At each boot, `entrypoint.sh` logs a `WARN` for every plugin
-named in `plugins*.ini` that isn't installed. AMXX skips missing plugins, so the server still starts.
+At each boot `entrypoint.sh` logs a `WARN` for every plugin named in `plugins*.ini` that isn't installed.
 
-## Expected files
+Never put a plugin's own `configs/plugins-*.ini` in `addons/amxmodx/configs/`: AMXX loads every file
+matching that name on **every** map. Mode plugins belong in `server/cstrike/addons/amxmodx/configs/maps/plugins-<prefix>.ini`.
 
-Filenames must match the ones in `server/cstrike/addons/amxmodx/configs/` (rename the downloaded file, or edit the `.ini`).
+## Status
 
-| File | Loaded on | Source | Notes |
+| Plugin file(s) | Loaded on | State | Source |
 |---|---|---|---|
-| `galileo.amxx` | all | github.com/addonszz/Galileo (releases) | Needs `galileo.txt` lang, `configs/galileo.cfg`, `sound/gal/` in content. Set RTV to 51% in its cfg |
-| `bullet_damage.amxx` | all | AlliedModders "Bullet Damage" | |
-| `resetscore.amxx` | all | AlliedModders "Reset Score" | `/rs`, `/resetscore` |
-| `sank_sounds.amxx` | all | AlliedModders "Sank Sounds Plugin" | `configs/sank_sounds.ini`; sounds in content |
-| `c4_timer.amxx` | de_ | AlliedModders "C4 Timer" | |
-| `backweapons.amxx` | de_, cs_, fy_ | AlliedModders "Back Weapons" | model in content |
-| `grenade_trail.amxx` | all except jb_ | AlliedModders "Grenade Trail" | |
-| `amx_parachute.amxx` | all except gg_ | AlliedModders "Parachute" | model in content |
-| `amx_vampire.amxx` | fy_, aim_, awp_ | AlliedModders "Vampire" | +15 HP / kill, +30 HS, cap 100 |
-| `gungame.amxx` | gg_ | AlliedModders "GunGame AMXX" (2.13c) | `configs/gungame.cfg` (weapon order, `gg_dm`) |
-| `jailbreak.amxx` | jb_ | AlliedModders "JailBreak Extreme" or a ReAPI JB from dev-cs.ru | Rename the core plugin or edit `plugins-jb.ini`; models in content |
-| `zombie_plague40.amxx` | zm_ | AlliedModders "Zombie Plague 4.3 Fix5a" | `configs/zombieplague.cfg` (`zp_delay`, `zp_lighting`); models/sounds in content |
+| `nostalgia_vampire.amxx` | fy_, aim_, awp_ | **in repo** | `scripting/nostalgia_vampire.sma` (cvars `vampire_kill_hp` 15, `vampire_headshot_hp` 30, `vampire_max_hp` 100) |
+| `nostalgia_parachute.amxx` | de_, cs_, fy_, zm_ | **in repo** | `scripting/nostalgia_parachute.sma` (hold E; cvar `parachute_fallspeed` 100; shows `models/parachute.mdl` if present in content) |
+| Reunion | metamod | **fetched at build** | github.com/rehlds/ReUnion release (`REUNION_VERSION`) |
+| `galileo.amxx` | all | to add | github.com/addonszz/Galileo @ `5073cac` |
+| `regg_core`, `regg_balancer`, `regg_controller`, `regg_informer`, `regg_leader`, `regg_map_cleaner`, `regg_notify`, `regg_warmup`, `regg_show_winner` | gg_ | to add | github.com/d3m37r4/regg @ `4f9a3f4` |
+| `bullet_damage`, `say_resetscore`, `gp_grenadetrail`, `c4countdown` | see `plugins*.ini` | to add | github.com/Jessyy/amxx-plugins-sma @ `9acd962` (`say_resetscore` needs `include/amxplus.inc`) |
+| `sank_sounds.amxx` | all | to add | github.com/ZTHawk/HL1_SankSounds @ `ed02c30` (keyword list already in `server/cstrike/.../configs/SND-LIST.CFG`) |
+| `amx_settings_api`, `zombie_plague_special_45`, `zpsp_zombie_classes`, `zpsp_human_classes`, `zp_game_mode_assassin_vs_sniper`, `zp_game_mode_nightmare`, `zpsp_game_mode_remix` | zm_ | to add | github.com/PerfectScrash/ZP-Special-Final @ `0585736` |
+| `backweapons.amxx` | de_, cs_, fy_ | drop-in | AlliedModders "Back Weapons" (needs its own `backweapons.mdl` in content) |
+| WHBlocker | metamod (`ANTICHEAT_ENABLED`, default on) | **required drop-in** | dev-cs.ru only: `addons/whblocker/*_mm_i386.so` |
 
-`miscstats.amxx` (Quake sounds), `statsx.amxx`, `adminvote.amxx` etc. come with AMXX itself.
-Auto-bunnyhop is native in ReGameDLL (`mp_autobunnyhopping`), so it needs no plugin.
+### Adding the GitHub-hosted plugins
 
-## Metamod modules (enabled by default)
+For each "to add" row, copy from the upstream repo at the pinned commit:
 
-| Path | Toggle | Source |
-|---|---|---|
-| `addons/reunion/reunion_mm_i386.so` + `reunion.cfg` (cstrike root) | `REUNION_ENABLED` (default `1`), `REUNION_SALT` | dev-cs.ru "Reunion" |
-| `addons/whblocker/*_mm_i386.so` | `ANTICHEAT_ENABLED` (default `1`) | dev-cs.ru "WHBlocker" |
+| Upstream path | Destination |
+|---|---|
+| `**/scripting/<name>.sma`, `**/scripting/regg/` | `server/plugins/addons/amxmodx/scripting/` |
+| `**/scripting/include/*.inc` | `server/plugins/addons/amxmodx/scripting/include/` |
+| `**/configs/<dir>/` (`galileo/`, `regg/`, `zpsp_configs/`) | `server/plugins/addons/amxmodx/configs/` |
+| `**/data/lang/*.txt` | `server/plugins/addons/amxmodx/data/lang/` |
+| `sound/`, `models/`, `sprites/` (ReGG `cstrike/sound/regg`, ZP Special root) | `server/plugins/assets/` |
 
-Both are required while enabled: if a binary is missing, the server stops at boot with an error instead of running without it.
-Set the toggle to `0` to opt out.
+Then commit, redeploy, and run `scripts/bootstrap-content.sh` on the host so the assets reach FastDL.
 
 Only download from these upstreams. Repacked bundles from random forums often ship RCON backdoors.

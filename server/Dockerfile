@@ -6,6 +6,7 @@ ARG REGAMEDLL_VERSION=5.28.0.756
 ARG METAMOD_R_VERSION=1.3.0.149
 ARG AMXX_VERSION=1.10.0-git5467
 ARG REAPI_VERSION=5.26.0.338
+ARG REUNION_VERSION=0.2.0.34
 
 ENV HLDS_DIR=/opt/hlds \
     LD_LIBRARY_PATH=/opt/hlds
@@ -46,6 +47,10 @@ RUN set -eu; \
     done; \
     fetch_zip "$gh/ReAPI/releases/download/$REAPI_VERSION/reapi-bin-$REAPI_VERSION.zip"; \
     cp -a /tmp/pkg/addons "$HLDS_DIR/cstrike/"; \
+    fetch_zip "$gh/ReUnion/releases/download/$REUNION_VERSION/reunion-$REUNION_VERSION.zip"; \
+    mkdir -p "$HLDS_DIR/cstrike/addons/reunion"; \
+    cp "$(find /tmp/pkg -name reunion_mm_i386.so | head -n1)" "$HLDS_DIR/cstrike/addons/reunion/"; \
+    cp "$(find /tmp/pkg -name reunion.cfg | head -n1)" "$HLDS_DIR/cstrike/reunion.cfg"; \
     rm -rf /tmp/pkg; \
     sed -i 's|^gamedll_linux.*|gamedll_linux "addons/metamod/metamod_i386.so"|' "$HLDS_DIR/cstrike/liblist.gam"; \
     chmod +x "$HLDS_DIR/hlds_linux"
