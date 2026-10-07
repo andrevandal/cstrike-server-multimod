@@ -4,20 +4,20 @@
 # Entries without a URL are reported as "no url" and skipped. Stock maps (de_dust2, de_dust,
 # de_aztec, cs_assault) ship with HLDS and are not listed.
 
-de_dust2_2x2
+de_dust2_2x2 https://gamebanana.com/dl/309832
 de_dust_2x2
 de_inferno_2x2
 de_abobora
-cs_rio
-# cs_rio file list (unverified): https://gamebanana.com/mods/download/92362
+cs_rio https://gamebanana.com/dl/1052733
 cs_chaves
+# cs_chaves: both GameBanana uploads (dl/274494, dl/908111) reference models\!uplant1.mdl, which crashes HLDS on load.
 cs_favela
-gg_lego
+gg_lego https://gamebanana.com/dl/553208
 gg_aim_dust2
-fy_pool_day
-fy_iceworld
-awp_india
-aim_aztec
+fy_pool_day https://gamebanana.com/dl/616976
+fy_iceworld https://gamebanana.com/dl/427749
+awp_india https://gamebanana.com/dl/1200010
+aim_aztec https://gamebanana.com/dl/294444
 zm_toxic_house
-zm_dust2_final
-zm_ice_attack
+zm_dust2_final https://gamebanana.com/dl/318377
+zm_ice_attack https://gamebanana.com/dl/482347

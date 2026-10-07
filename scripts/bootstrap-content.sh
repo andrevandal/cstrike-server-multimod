@@ -30,12 +30,17 @@ if missing_tools; then
     mkdir -p "$CONTENT"
     args=()
     [ "$FORCE" = "1" ] && args+=(--force)
-    exec docker run --rm -e BOOTSTRAP_IN_DOCKER=1 -e MANIFEST=/manifest \
+    exec docker run --rm -e BOOTSTRAP_IN_DOCKER=1 -e MANIFEST=/manifest -e HOST_OWNER="$(id -u):$(id -g)" \
       -v "$ROOT:/repo:ro" -v "$(realpath "$MANIFEST"):/manifest:ro" -v "$(realpath "$CONTENT"):/content" \
-      alpine:3 sh -c 'apk add --no-cache bash curl unzip 7zip file >/dev/null && bash /repo/scripts/bootstrap-content.sh "$@" /content' \
+      debian:bookworm-slim sh -c 'sed -i "s/^Components: main$/Components: main non-free/" /etc/apt/sources.list.d/debian.sources \
+        && apt-get update -qq >/dev/null \
+        && apt-get install -y -qq --no-install-recommends bash ca-certificates curl unzip p7zip-full p7zip-rar file >/dev/null \
+        || exit 1
+        bash /repo/scripts/bootstrap-content.sh "$@" /content; rc=$?
+        chown -R "$HOST_OWNER" /content; exit $rc' \
       bootstrap "${args[@]}"
   fi
-  echo "missing tools: need curl, unzip, 7z and file (or docker to run them in a container)" >&2
+  echo "missing tools: need curl, unzip, 7z with RAR support (p7zip-rar) and file (or docker to run them in a container)" >&2
   exit 1
 fi
 
@@ -48,6 +53,7 @@ extract() {
   local archive="$1" dest="$2"
   case "$(file -b --mime-type "$archive")" in
     application/zip) unzip -q -o "$archive" -d "$dest" ;;
+    # RAR needs the non-free codec (p7zip-rar): Alpine's 7-Zip has none and libarchive mis-decodes some RAR4 files.
     application/x-7z-compressed|application/x-rar|application/vnd.rar|application/x-rar-compressed)
       7z x -y -o"$dest" "$archive" >/dev/null ;;
     text/html) echo "got an HTML page, not a file (use a direct download link)"; return 1 ;;
