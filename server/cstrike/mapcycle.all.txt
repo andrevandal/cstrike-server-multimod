@@ -16,8 +16,6 @@ fy_pool_day
 fy_iceworld
 awp_india
 aim_aztec
-jb_jail_break
-jb_arctic
 zm_toxic_house
 zm_dust2_final
 zm_ice_attack

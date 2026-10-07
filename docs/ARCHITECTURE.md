@@ -78,7 +78,7 @@ Changing mode = changing map: end-of-map vote, `rtv`, `amx_votemap`, or an admin
 | `cs_` | cs_assault, cs_rio, cs_chaves, cs_favela | miscstats, backweapons, grenade_trail, parachute | auto-bhop |
 | `gg_` | gg_lego, gg_aim_dust2 | gungame, miscstats, grenade_trail | no freeze/buy/money, infinite round, no time limit |
 | `fy_` `aim_` `awp_` | fy_pool_day, fy_iceworld, aim_aztec, awp_india | miscstats, vampire, backweapons, grenade_trail, parachute | no freeze, no buy, 1.5 min rounds, auto-bhop |
-| `jb_` | jb_jail_break, jb_arctic | jailbreak, miscstats, parachute | 4 min rounds, no team balance, `sv_alltalk 0`, **no bhop** |
+| `jb_` (not in rotation; admin `amx_map` only) | jb_jail_break, jb_arctic | jailbreak, miscstats, parachute | 4 min rounds, no team balance, `sv_alltalk 0`, **no bhop** |
 | `zm_` | zm_toxic_house, zm_ice_attack, zm_dust2_final | zombie_plague40, grenade_trail, parachute | 3 min rounds, no freeze, no buy, auto-bhop |
 
 Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`, `/top15`), `restmenu`,
