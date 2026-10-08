@@ -1,0 +1,20 @@
+// Desired rotation. entrypoint.sh writes mapcycle.txt with only the maps present in maps/.
+de_dust2
+de_dust2_2x2
+de_dust
+de_inferno2x2
+de_aztec
+cs_assault
+cs_rio
+cs_chaves
+gg_lego
+gg_mini_dust2
+gg_33_besot
+fy_pool_day
+fy_iceworld
+awp_india
+aim_aztec
+aim_headshot
+zm_toxic_house_b
+zm_dust2_final
+zm_ice_attack

@@ -1,0 +1,50 @@
+# This File contains all Botnames which are used if you don't
+# specify a name using "pb add"
+# There must be at least 9 names in here and you're allowed a maximum
+# of 21 chars for the name ! Why ? The "[POD]" will be
+# placed before the Name and the Skill will be appended...
+#
+# Line below contains 21 chars as a marker for you
+#23456789012345678901
+#
+# This server sets pb_detailnames 0 (see server/Dockerfile), so PodBot does NOT
+# add its own [POD]/[P*D]/[P0D] prefix or skill suffix: every name below already
+# carries the "[BOT]" tag literally, Brazilian 2000s LAN-house flavored, mixing
+# classic made-up nicknames with first-name + gamer-suffix aliases.
+#
+[BOT]TioDaLan
+[BOT]Corujao23h
+[BOT]FoneDeUmLado
+[BOT]MouseBolinha
+[BOT]MixSala3
+[BOT]RushBEterno
+[BOT]DaCapaAi
+[BOT]FicaBase
+[BOT]SemTK_Pls
+[BOT]MonitorCRT
+[BOT]FilaDaMaquina
+[BOT]HoraGratis
+[BOT]PizzaDeBalcao
+[BOT]Disquete32
+[BOT]NaoTelando
+[BOT]EcoDeNovo
+[BOT]PlantaNoB
+[BOT]CadeiraPlastico
+[BOT]Rafa_AWP
+[BOT]Leo.Faca
+[BOT]Duda-HS
+[BOT]Gui_Rush
+[BOT]Nanda.CT
+[BOT]Ju_Defuse
+[BOT]Biel_Eco
+[BOT]Lipe.M4
+[BOT]Tati-Flash
+[BOT]Caio_Base
+[BOT]Bia_Spray
+[BOT]Dani.Granada
+[BOT]Vini-Bomba
+[BOT]Mari_Plant
+[BOT]Teo.Mix
+[BOT]Lu_Pistol
+[BOT]Nico.Kevlar
+[BOT]Paulinho_C4

@@ -1,0 +1,7 @@
+.env
+/content/*
+!/content/README.md
+!/content/maps.txt
+/state/
+/logs/
+/backups/
