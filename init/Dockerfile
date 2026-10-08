@@ -17,5 +17,6 @@ RUN set -eu; \
 WORKDIR /app
 COPY scripts/ /app/scripts/
 COPY server/plugins/assets/ /app/server/plugins/assets/
+COPY content/maps.txt /app/content/maps.txt
 
 ENTRYPOINT ["/app/scripts/init-content.sh"]

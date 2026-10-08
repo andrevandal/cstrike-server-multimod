@@ -10,10 +10,21 @@ mkdir -p "$CONTENT_DIR"
 
 export BOOTSTRAP_IN_DOCKER=1
 export PACKAGE_IN_DOCKER=1
-export MANIFEST="${CONTENT_DIR}/maps.txt"
 export ASSETS="$ROOT/server/plugins/assets"
 
-log "Verifying maps and client assets in $CONTENT_DIR..."
+# Seed maps.txt from image if not already on the volume
+if [ ! -f "$CONTENT_DIR/maps.txt" ] && [ -f "$ROOT/content/maps.txt" ]; then
+  log "Seeding $CONTENT_DIR/maps.txt from image..."
+  cp "$ROOT/content/maps.txt" "$CONTENT_DIR/maps.txt"
+fi
+
+export MANIFEST="${CONTENT_DIR}/maps.txt"
+
+# Always ensure plugin assets are present in the FastDL content directory
+if [ -d "$ASSETS" ]; then
+  log "Syncing plugin assets to $CONTENT_DIR..."
+  cp -a "$ASSETS/." "$CONTENT_DIR/"
+fi
 
 if [ ! -f "$MANIFEST" ]; then
   log "WARN: $MANIFEST not found; skipping map bootstrap."

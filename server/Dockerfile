@@ -91,6 +91,10 @@ RUN set -eu; \
       test -s "$out"; \
     done; \
     cp -a /tmp/plugins/. "$HLDS_DIR/cstrike/"; \
+    if [ -d /tmp/plugins/assets ]; then \
+      cp -a /tmp/plugins/assets/. "$HLDS_DIR/cstrike/"; \
+      rm -rf "$HLDS_DIR/cstrike/assets"; \
+    fi; \
     rm -rf /tmp/plugins
 
 COPY cstrike/ /opt/hlds/cstrike/

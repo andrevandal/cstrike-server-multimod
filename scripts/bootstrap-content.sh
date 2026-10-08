@@ -16,7 +16,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONTENT="${1:-$ROOT/content}"
 MANIFEST="${MANIFEST:-$CONTENT/maps.txt}"
 [ -f "$MANIFEST" ] || MANIFEST="$ROOT/content/maps.txt"
-ASSETS="$ROOT/server/plugins/assets"
+ASSETS="${ASSETS:-$ROOT/server/plugins/assets}"
 
 missing_tools() {
   local tool

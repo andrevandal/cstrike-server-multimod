@@ -1,0 +1,7 @@
+.git
+state/
+logs/
+backups/
+content/*
+!content/maps.txt
+!content/README.md
