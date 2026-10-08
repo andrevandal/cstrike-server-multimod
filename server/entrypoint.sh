@@ -98,6 +98,11 @@ render_metamod_plugins() {
   local plugins="$CSTRIKE/addons/metamod/plugins.ini"
   echo "linux addons/amxmodx/dlls/amxmodx_mm_i386.so" > "$plugins"
 
+  local podbot="$CSTRIKE/addons/podbot/podbot_mm.so"
+  [ -f "$podbot" ] || die "PodBot is missing $podbot"
+  echo "linux addons/podbot/podbot_mm.so" >> "$plugins"
+  log "PodBot enabled"
+
   if [ "$REUNION_ENABLED" = "1" ]; then
     local reunion="$CSTRIKE/addons/reunion/reunion_mm_i386.so"
     [ -f "$reunion" ] || die "Reunion is enabled but $reunion is missing (add it per server/plugins/MANIFEST.md or set REUNION_ENABLED=0)"

@@ -21,6 +21,8 @@ matching that name on **every** map. Mode plugins belong in `server/cstrike/addo
 | `nostalgia_vampire.amxx` | fy_, aim_, awp_ | **in repo** | `scripting/nostalgia_vampire.sma` (cvars `vampire_kill_hp` 15, `vampire_headshot_hp` 30, `vampire_max_hp` 100) |
 | `nostalgia_parachute.amxx` | de_, cs_, fy_, zm_ | **in repo** | `scripting/nostalgia_parachute.sma` (hold E; cvar `parachute_fallspeed` 100; shows `models/parachute.mdl` if present in content) |
 | Reunion | metamod | **fetched at build** | github.com/rehlds/ReUnion release (`REUNION_VERSION`) |
+| PodBot MM V3B24 | metamod | **fetched at build** | `APGRoboCop/podbot_mm` release; auto-population disabled because not every rotated map has a waypoint; `fy_pool_day.pwf` fetched from `ggoulart/cs1.6-server-more-maps` at a pinned commit |
+| `podbot_admin.amxx` | all | **in repo** | Full-admin `pb_add`, `pb_fillserver`, and `pb_removebots` commands that invoke PodBot through the server console |
 | `galileo.amxx` | all | **in repo** | github.com/addonszz/Galileo @ `5073cac` |
 | `regg_core`, `regg_balancer`, `regg_controller`, `regg_informer`, `regg_leader`, `regg_map_cleaner`, `regg_notify`, `regg_warmup`, `regg_show_winner` | gg_ | **in repo** | github.com/d3m37r4/regg @ `4f9a3f4` |
 | `bullet_damage`, `say_resetscore`, `gp_grenadetrail`, `c4countdown` | see `plugins*.ini` | **in repo** | github.com/Jessyy/amxx-plugins-sma @ `9acd962` (`say_resetscore` needs `include/amxplus.inc`) |

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Bumps the ARG pins in server/Dockerfile to the latest stable upstream releases:
-# ReHLDS, ReGameDLL, Metamod-R, ReAPI, ReUnion (newest non-prerelease GitHub release),
+# ReHLDS, ReGameDLL, Metamod-R, ReAPI, ReUnion and PodBot (newest non-prerelease GitHub releases),
 # AMX Mod X (newest 1.10 build on amxmodx.org) and WHBlocker (newest PluginyCS/BasePack release).
 # Review the diff, rebuild, smoke-test, then commit.
 set -euo pipefail
@@ -35,6 +35,13 @@ set_arg REGAMEDLL_VERSION "$(latest_release rehlds/ReGameDLL_CS)"
 set_arg METAMOD_R_VERSION "$(latest_release rehlds/Metamod-R)"
 set_arg REAPI_VERSION "$(latest_release rehlds/ReAPI)"
 set_arg REUNION_VERSION "$(latest_release rehlds/ReUnion)"
+
+podbot_url="$(curl -fsSL "$API/APGRoboCop/podbot_mm/releases/latest" \
+  | sed -n 's/^      "browser_download_url": "\(.*podbot_full_.*\.zip\)",$/\1/p')"
+[ -n "$podbot_url" ] || { echo "could not resolve PodBot archive" >&2; exit 1; }
+podbot_sha="$(curl -fsSL "$podbot_url" | sha256sum | cut -d' ' -f1)"
+set_arg PODBOT_URL "$podbot_url"
+set_arg PODBOT_SHA256 "$podbot_sha"
 
 # AMXX 1.10 has no tagged release; every server runs the newest 1.10 build.
 amxx="$(curl -fsSL https://www.amxmodx.org/amxxdrop/1.10/ \

@@ -12,6 +12,7 @@ A Counter-Strike 1.6 server for friends where the **map prefix picks the game mo
 | Scripting | **AMX Mod X 1.10** + **ReAPI** | Admin, votes, stats, per-map plugin loading |
 | Dual protocol (on by default) | **Reunion** (official GitHub release, fetched at build) | Lets non-Steam clients (protocol 47/48) join |
 | Anti-cheat (on by default) | **WHBlocker** (PluginyCS/BasePack copy, fetched at build, SHA-256 checked) | Server-side wallhack blocking (doesn't send occluded entities) |
+| Bots | **PodBot MM V3B24** (upstream release, SHA-256 checked) | Loaded globally, manually populated only on maps with a waypoint; `fy_pool_day` includes a checksum-pinned waypoint |
 
 Versions are pinned as `ARG`s in `server/Dockerfile`; `scripts/update-versions.sh` bumps them to the latest stable releases. HLDS itself comes from steamcmd (app 90, `steam_legacy` branch).
 
@@ -50,7 +51,7 @@ The HLDS game loop is single-threaded. Two CPUs leave one core free for 1000 Hz 
 | Managed config (server.cfg, plugin lists, mode cfgs) | `server/cstrike/` → baked into the image | git + redeploy |
 | Third-party plugins / modules | `server/plugins/` → compiled/copied into the image | git + redeploy |
 | Secrets & identity (rcon, password, hostname, FastDL URL, admins) | env vars → `env.cfg`, `users.ini` rendered at boot | Coolify env + restart |
-| Metamod modules (on by default, fail-fast if missing) | `ANTICHEAT_ENABLED`, `REUNION_ENABLED` (default `1`) → metamod `plugins.ini` rendered at boot | Coolify env + restart |
+| Metamod modules (fail-fast if missing) | PodBot always loads; `ANTICHEAT_ENABLED`, `REUNION_ENABLED` (default `1`) control their modules → metamod `plugins.ini` rendered at boot | Coolify env + restart |
 | Downloadable content | `./content` (host bind), filled by `scripts/bootstrap-content.sh` from `content/maps.txt` + `server/plugins/assets/` | bootstrap + restart |
 | Runtime state | `./state` (host bind) | the server itself |
 
@@ -80,9 +81,11 @@ Changing mode = changing map: end-of-map vote, `rtv`, `amx_votemap`, or an admin
 | `fy_` `aim_` `awp_` | fy_pool_day, fy_iceworld, aim_aztec, awp_india | miscstats, nostalgia_vampire, backweapons, gp_grenadetrail, nostalgia_parachute | no freeze, no buy, 1.5 min rounds, auto-bhop |
 | `zm_` | zm_toxic_house_b, zm_ice_attack, zm_dust2_final | Zombie Plague Special 4.5 (core, classes, extra modes), gp_grenadetrail, nostalgia_parachute | 3 min rounds, no freeze, no buy, auto-bhop |
 
-Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`, `/top15`), `restmenu`,
+Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`, `/top15`),
 **Galileo** (end-of-map vote, `rtv` at 51%, `nominate`), `bullet_damage`, `say_resetscore` (`/rs`), `sank_sounds` (keywords in `configs/SND-LIST.CFG`).
-`mapchooser.amxx` and `nextmap.amxx` are disabled because Galileo replaces them.
+`mapchooser.amxx` and `nextmap.amxx` are disabled because Galileo replaces them; `restmenu.amxx` stays disabled because it prevents PodBot from selecting a team.
+
+PodBot is a global Metamod module. It never auto-adds bots because the rotation contains maps without a matching `.pwf`. AMXX exposes `pb_add`, `pb_fillserver`, and `pb_removebots` only to full admins (`ADMIN_RCON`); `fy_pool_day` is bundled with a waypoint.
 
 **Player votes.** `amx_default_access "jz"` gives every player the ADMIN_VOTE flag, so anyone can run the stock
 `amx_votekick`, `amx_voteban` and `amx_votemap`, with a 51–60% ratio and a 90 s cooldown.

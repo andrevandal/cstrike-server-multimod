@@ -12,6 +12,11 @@ ARG REUNION_VERSION=0.2.0.25
 # release commit and refuse anything whose checksum changed.
 ARG BASEPACK_REF=6b92574741cb09ae39076eede326557ff95b7e56
 ARG WHBLOCKER_SHA256=cba69733648518a90718c367634467e14f0055814293be0c7a40b4ac85bc84c1
+# PodBot is fetched from its upstream release and protected by its archive checksum.
+ARG PODBOT_URL=https://github.com/APGRoboCop/podbot_mm/releases/download/V3B24-APG/podbot_full_V3B24.zip
+ARG PODBOT_SHA256=4cbb2baaa5c6e9120091a7d053f3e8eefefcd06e81236bd8b8e67eaacc18a4c7
+ARG FY_POOL_DAY_PWF_URL=https://raw.githubusercontent.com/ggoulart/cs1.6-server-more-maps/cd8b5408e0927a74670b4f08f7df8caa55e2b28b/podbot/wptdefault/fy_pool_day.pwf
+ARG FY_POOL_DAY_PWF_SHA256=378a3b3ddd72734223066db48fd8d36f26dfeec293642418e32402b7eb810cca
 
 ENV HLDS_DIR=/opt/hlds \
     LD_LIBRARY_PATH=/opt/hlds
@@ -56,7 +61,18 @@ RUN set -eu; \
     mkdir -p "$HLDS_DIR/cstrike/addons/reunion"; \
     cp "$(find /tmp/pkg -name reunion_mm_i386.so | head -n1)" "$HLDS_DIR/cstrike/addons/reunion/"; \
     cp "$(find /tmp/pkg -name reunion.cfg | head -n1)" "$HLDS_DIR/cstrike/reunion.cfg"; \
+    rm -rf /tmp/pkg /tmp/podbot.zip; \
+    mkdir /tmp/pkg; \
+    curl -fsSL "$PODBOT_URL" -o /tmp/podbot.zip; \
+    echo "$PODBOT_SHA256  /tmp/podbot.zip" | sha256sum -c -; \
+    unzip -q /tmp/podbot.zip -d /tmp/pkg; \
+    rm /tmp/podbot.zip; \
+    mkdir -p "$HLDS_DIR/cstrike/addons/podbot"; \
+    cp -a /tmp/pkg/podbot/. "$HLDS_DIR/cstrike/addons/podbot/"; \
     rm -rf /tmp/pkg; \
+    curl -fsSL "$FY_POOL_DAY_PWF_URL" -o "$HLDS_DIR/cstrike/addons/podbot/wptdefault/fy_pool_day.pwf"; \
+    echo "$FY_POOL_DAY_PWF_SHA256  $HLDS_DIR/cstrike/addons/podbot/wptdefault/fy_pool_day.pwf" | sha256sum -c -; \
+    sed -i -e '/^pb add /d' -e 's/^pb_minbotskill .*/pb_minbotskill 80/' -e 's/^pb_maxbotskill .*/pb_maxbotskill 90/' "$HLDS_DIR/cstrike/addons/podbot/podbot.cfg"; \
     bp="https://raw.githubusercontent.com/PluginyCS/BasePack/$BASEPACK_REF/cstrike/addons/whblocker"; \
     mkdir -p "$HLDS_DIR/cstrike/addons/whblocker"; \
     curl -fsSL "$bp/whblocker_mm_i386.so" -o "$HLDS_DIR/cstrike/addons/whblocker/whblocker_mm_i386.so"; \
