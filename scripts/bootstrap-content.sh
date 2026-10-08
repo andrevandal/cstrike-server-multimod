@@ -14,7 +14,8 @@ if [ "${1:-}" = "--force" ]; then FORCE=1; shift; fi
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONTENT="${1:-$ROOT/content}"
-MANIFEST="${MANIFEST:-$ROOT/content/maps.txt}"
+MANIFEST="${MANIFEST:-$CONTENT/maps.txt}"
+[ -f "$MANIFEST" ] || MANIFEST="$ROOT/content/maps.txt"
 ASSETS="$ROOT/server/plugins/assets"
 
 missing_tools() {
@@ -34,7 +35,7 @@ if missing_tools; then
       -v "$ROOT:/repo:ro" -v "$(realpath "$MANIFEST"):/manifest:ro" -v "$(realpath "$CONTENT"):/content" \
       debian:bookworm-slim sh -c 'sed -i "s/^Components: main$/Components: main non-free/" /etc/apt/sources.list.d/debian.sources \
         && apt-get update -qq >/dev/null \
-        && apt-get install -y -qq --no-install-recommends bash ca-certificates curl unzip p7zip-full p7zip-rar file >/dev/null \
+        && apt-get install -y -qq --no-install-recommends bash ca-certificates curl unzip p7zip-full p7zip-rar file zip >/dev/null \
         || exit 1
         bash /repo/scripts/bootstrap-content.sh "$@" /content; rc=$?
         chown -R "$HOST_OWNER" /content; exit $rc' \
@@ -114,5 +115,14 @@ summary "ok:" "${ok[@]}"
 summary "skipped:" "${skipped[@]}"
 summary "no url:" "${no_url[@]}"
 summary "failed:" "${failed[@]}"
+
+if [ -f "$ROOT/scripts/package-client-assets.sh" ]; then
+  if [ "${#ok[@]}" -gt 0 ] || [ ! -f "$CONTENT/client-assets.zip" ]; then
+    echo "==> packaging client-assets.zip"
+    bash "$ROOT/scripts/package-client-assets.sh" "$CONTENT"
+  else
+    echo "==> client-assets.zip already up to date"
+  fi
+fi
 
 [ "${#failed[@]}" -eq 0 ]

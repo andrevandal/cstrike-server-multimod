@@ -1,4 +1,12 @@
 services:
+  content-init:
+    build:
+      context: .
+      dockerfile: init/Dockerfile
+    restart: "no"
+    volumes:
+      - ./content:/content
+
   cstrike:
     build: ./server
     restart: unless-stopped
@@ -8,7 +16,7 @@ services:
       RCON_PASSWORD: ${RCON_PASSWORD:?RCON_PASSWORD is required}
       SV_PASSWORD: ${SV_PASSWORD:-}
       SERVER_NAME: ${SERVER_NAME:-CS 1.6 Nostalgia | Multi-Mod}
-      FASTDL_URL: ${FASTDL_URL:-http://fastdl.vandal.services:8080/}
+      FASTDL_URL: ${FASTDL_URL:-http://cstrike.vandal.services:8888/}
       START_MAP: ${START_MAP:-de_dust2}
       MAXPLAYERS: ${MAXPLAYERS:-32}
       ADMINS: ${ADMINS:-STEAM_0:1:26191905}
@@ -16,6 +24,9 @@ services:
       ANTICHEAT_ENABLED: ${ANTICHEAT_ENABLED:-1}
       REUNION_ENABLED: ${REUNION_ENABLED:-1}
       REUNION_SALT: ${REUNION_SALT:-}
+    depends_on:
+      content-init:
+        condition: service_completed_successfully
     ports:
       - "27015:27015/udp"
     volumes:
@@ -34,8 +45,11 @@ services:
   fastdl:
     image: nginx:1.27-alpine
     restart: unless-stopped
+    depends_on:
+      content-init:
+        condition: service_completed_successfully
     ports:
-      - "8080:80"
+      - "${FASTDL_PORT:-8888}:80"
     volumes:
       - ./content:/usr/share/nginx/html:ro
       - ./fastdl/nginx.conf:/etc/nginx/conf.d/default.conf:ro

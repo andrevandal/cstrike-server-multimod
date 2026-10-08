@@ -50,8 +50,8 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | Non-Steam clients | On by default (Reunion is fetched at build); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
 | Bots | PodBot loads without auto-spawning. Full admins use `pb_add`, `pb_fillserver`, or `pb_removebots` on maps with a waypoint; `fy_pool_day` ships with a checksum-pinned waypoint. Chat is PT-BR (`botchat.txt`) rate-limited to avoid spam (`pb_chat_interval 20.0`), bot flashlights are suppressed, and names carry a `[BOT]` tag (`botnames.txt`, `pb_detailnames 0`) |
 | Add a map | Add `<map> <url>` to `content/maps.txt` and run the bootstrap; list it in `server/cstrike/mapcycle.all.txt`, redeploy |
-| Check FastDL | `curl -I http://fastdl.vandal.services:8080/maps/cs_rio.bsp` → `200`, no `Location` header |
-| Repack client assets | `scripts/package-client-assets.sh` zips `content/` into `content/client-assets.zip`, linked from the MOTD; rerun after any map/asset change, then `docker compose restart fastdl` |
+| Check FastDL | `curl -I http://cstrike.vandal.services:8888/maps/cs_rio.bsp` → `200`, no `Location` header |
+| Repack client assets | Automatic via `content-init` on deployment/startup (or manually via `scripts/package-client-assets.sh`); creates `content/client-assets.zip` served by FastDL |
 | Manual backup | `docker compose exec backup backup` |
 | Restore | `scripts/restore.sh backups/cs16-state-<ts>.tar.gz` (on Coolify: `CSTRIKE_CONTAINER=<name> scripts/restore.sh …`) |
 | Update engine/modules | `scripts/update-versions.sh` bumps the `ARG` pins in `server/Dockerfile` to the latest stable releases (ReHLDS, ReGameDLL, Metamod-r, ReAPI, Reunion, PodBot, newest AMXX 1.10 build, WHBlocker from the newest PluginyCS/BasePack release). Review the diff, `docker compose build cstrike`, boot it, check logs, commit |
