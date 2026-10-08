@@ -1,0 +1,14 @@
+//overview description file for aim_aztec.bsp
+
+global
+{
+	ZOOM	2.93 
+	ORIGIN	-2580.31   -1866.59   -416.00
+	ROTATED 0
+}
+
+layer
+{
+	IMAGE	"overviews/aim_aztec.tga"
+	HEIGHT	-769
+} 

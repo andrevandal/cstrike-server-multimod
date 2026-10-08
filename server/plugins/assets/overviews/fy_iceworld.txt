@@ -1,0 +1,14 @@
+// overview description file for fy_iceworld.bsp
+
+global 
+{
+	ZOOM	4
+	ORIGIN	384 	-640	-257
+	ROTATED	0
+}
+
+layer 
+{
+	IMAGE	"overviews/fy_iceworld.bmp"
+	HEIGHT	-257
+}
