@@ -1,6 +1,7 @@
 #include <amxmodx>
 #include <amxmisc>
-
+#include <cstrike>
+#include <reapi>
 #define PLUGIN "Nostalgia Admin Menu"
 #define VERSION "1.0.0"
 #define AUTHOR "cstrike-server-multimod"
@@ -18,6 +19,7 @@ public plugin_init()
     register_clcmd("say /deathmatch", "cmd_ToggleDM");
     register_clcmd("say_team /dm", "cmd_ToggleDM");
     register_clcmd("amx_dm", "cmd_ToggleDM", ADMIN_CVAR, "- ativa ou desativa modo Deathmatch");
+    RegisterHookChain(RG_CBasePlayer_Spawn, "OnPlayerSpawn", .post = true);
 }
 
 public cmd_MainMenu(id)
@@ -475,7 +477,7 @@ ToggleDMMode()
     if (dm_respawn <= 0)
     {
         // Turn ON TDM
-        server_cmd("mp_forcerespawn 1.5; mp_respawn_immunitytime 2; mp_round_infinite 1; mp_free_armor 2; mp_buy_anywhere 1; mp_buytime 9999; mp_refill_bpammo_weapons 1; mp_auto_reload_weapons 1; mp_freeforall 0; mp_freezetime 0; sv_restart 1");
+        server_cmd("mp_forcerespawn 1.5; mp_respawn_immunitytime 2; mp_round_infinite 1; mp_free_armor 2; mp_buy_anywhere 1; mp_buytime 9999; mp_refill_bpammo_weapons 1; mp_auto_reload_weapons 1; mp_startmoney 16000; mp_maxmoney 16000; mp_freeforall 0; mp_freezetime 0; sv_restart 1");
         client_print(0, print_chat, "[DM] Modo Deathmatch ATIVADO (TDM)! Respawn rapido e rounds infinitos.");
     }
     else if (!dm_ffa)
@@ -487,7 +489,18 @@ ToggleDMMode()
     else
     {
         // Turn OFF -> Classic
-        server_cmd("mp_forcerespawn 0; mp_respawn_immunitytime 0; mp_round_infinite 0; mp_free_armor 0; mp_buy_anywhere 0; mp_buytime 0.25; mp_refill_bpammo_weapons 0; mp_auto_reload_weapons 0; mp_freeforall 0; mp_freezetime 2; sv_restart 1");
+        server_cmd("mp_forcerespawn 0; mp_respawn_immunitytime 0; mp_round_infinite 0; mp_free_armor 0; mp_buy_anywhere 0; mp_buytime 0.25; mp_refill_bpammo_weapons 0; mp_auto_reload_weapons 0; mp_startmoney 800; mp_maxmoney 16000; mp_freeforall 0; mp_freezetime 2; sv_restart 1");
         client_print(0, print_chat, "[DM] Modo Deathmatch DESLIGADO. Modo classico restaurado.");
+    }
+}
+
+public OnPlayerSpawn(const id)
+{
+    if (!is_user_alive(id))
+        return;
+
+    if (get_cvar_num("mp_forcerespawn") > 0)
+    {
+        cs_set_user_money(id, 16000);
     }
 }

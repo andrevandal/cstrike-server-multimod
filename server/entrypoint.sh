@@ -147,6 +147,10 @@ link_content() {
   [ -d "$CONTENT_DIR" ] || { warn "$CONTENT_DIR not mounted; custom maps unavailable"; return; }
   find "$CSTRIKE" -xtype l -lname "$CONTENT_DIR/*" -delete
   cp -rsf "$CONTENT_DIR/." "$CSTRIKE/"
+  local wpt="$CSTRIKE/addons/podbot/wptdefault"
+  if [ -d "$wpt" ]; then
+    find "$CONTENT_DIR" -type f \( -iname "*.pwf" -o -iname "*.pxp" \) -exec cp -u {} "$wpt/" \; 2>/dev/null || true
+  fi
 }
 
 render_mapcycle() {

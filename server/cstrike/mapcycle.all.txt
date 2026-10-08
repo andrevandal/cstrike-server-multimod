@@ -7,9 +7,6 @@ de_aztec
 cs_assault
 cs_rio
 cs_chaves
-gg_lego
-gg_mini_dust2
-gg_33_besot
 fy_pool_day
 fy_iceworld
 awp_india
