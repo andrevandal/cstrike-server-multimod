@@ -164,6 +164,34 @@ render_mapcycle() {
   [ "${#available[@]}" -gt 0 ] || die "no map from mapcycle.all.txt is available"
   printf '%s\n' "${available[@]}" > "$CSTRIKE/mapcycle.txt"
   log "mapcycle: ${#available[@]} maps available"
+
+  # AMXX mapsmenu (amx_mapmenu) reads addons/amxmodx/configs/maps.ini:
+  # put rotation maps first in exact rotation order, then append remaining installed stock maps.
+  local other_maps=() bsp bsp_name is_rot r
+  for bsp in "$CSTRIKE"/maps/*.bsp; do
+    [ -f "$bsp" ] || continue
+    bsp_name="$(basename "$bsp" .bsp)"
+    is_rot=0
+    for r in "${available[@]}"; do
+      if [ "$r" = "$bsp_name" ]; then
+        is_rot=1
+        break
+      fi
+    done
+    if [ "$is_rot" -eq 0 ]; then
+      other_maps+=("$bsp_name")
+    fi
+  done
+
+  {
+    echo "; Rotation maps (first)"
+    printf '%s\n' "${available[@]}"
+    if [ "${#other_maps[@]}" -gt 0 ]; then
+      echo ""
+      echo "; Other installed maps"
+      printf '%s\n' "${other_maps[@]}"
+    fi
+  } > "$AMXX/configs/maps.ini"
 }
 
 check_plugins() {
@@ -191,7 +219,7 @@ main() {
 
   if [ "$(id -u)" = "0" ] && id "$RUN_AS" >/dev/null 2>&1; then
     chown -R "$RUN_AS:$RUN_AS" "$STATE_DIR" "$LOGS_DIR"
-    chown -h "$RUN_AS:$RUN_AS" "$CSTRIKE/env.cfg" "$CSTRIKE/motd.txt" "$CSTRIKE/mapcycle.txt"
+    chown -h "$RUN_AS:$RUN_AS" "$CSTRIKE/env.cfg" "$CSTRIKE/motd.txt" "$CSTRIKE/mapcycle.txt" "$AMXX/configs/maps.ini"
   fi
 
   if [ "$#" -eq 0 ]; then

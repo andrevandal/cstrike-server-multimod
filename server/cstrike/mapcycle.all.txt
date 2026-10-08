@@ -9,10 +9,12 @@ cs_rio
 cs_chaves
 gg_lego
 gg_mini_dust2
+gg_33_besot
 fy_pool_day
 fy_iceworld
 awp_india
 aim_aztec
+aim_headshot
 zm_toxic_house_b
 zm_dust2_final
 zm_ice_attack

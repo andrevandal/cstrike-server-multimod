@@ -12,9 +12,48 @@ cs_chaves https://gamebanana.com/dl/274494
 gg_lego https://gamebanana.com/dl/553208
 gg_mini_dust2 https://gamebanana.com/dl/372636
 fy_pool_day https://gamebanana.com/dl/616976
+# fy_pool_day ships no overview; content/overviews/fy_pool_day.{bmp,txt} sourced from GameBanana
+# mods/40270 (the only file ever posted on this map's own mods/86562 page, so it's guaranteed to
+# match our .bsp). Its existing maps/fy_pool_day.res already lists the overview files.
 fy_iceworld https://gamebanana.com/dl/427749
+# fy_iceworld ships no overview; content/overviews/fy_iceworld.{bmp,txt} sourced from GameBanana
+# mods/479607 (the only file ever posted on this map's own mods/86288 page, so it's guaranteed to
+# match our .bsp). It has no .res of its own, so content/maps/fy_iceworld.res was added with just
+# the two overview lines (the source package's fuller .res also lists WADs/sky tga we don't have;
+# pulling those in verbatim would turn a cosmetic radar warning into a hard download failure).
 awp_india https://gamebanana.com/dl/1200010
+# awp_india ships no overview; content/overviews/awp_india.{bmp,txt} + content/maps/awp_india.res
+# sourced from GameBanana mods/586845, which explicitly targets mods/87358 — the same mod page
+# (and current sole file) this entry downloads from.
 aim_aztec https://gamebanana.com/dl/294444
 zm_toxic_house_b https://gamebanana.com/dl/1512406
 zm_dust2_final https://gamebanana.com/dl/318377
 zm_ice_attack https://gamebanana.com/dl/482347
+aim_headshot https://gamebanana.com/dl/360306
+# aim_headshot: CC BY-NC-ND 4.0 by Shoutman (credit required, no modified redistribution).
+# No .res/WAD/overview/PodBot waypoint in the archive; bots on this map won't path well until one is added.
+gg_33_besot https://gamebanana.com/dl/430957
+
+# Considered and NOT added:
+# - de_minidust2 (GameBanana mods/543658): this is a Counter-Strike: Source map, wrong engine
+#   (GoldSrc/ReHLDS can't load it) regardless of its license.
+# - GameBanana mods/8533 "Retextured Map Pack": not a map pack at all, it's a client-side GoldSrc
+#   detail-texture overlay (toggled by the player's own r_detailtextures cvar) covering only
+#   de_dust2, de_dust2_2x2, de_dust, de_aztec and cs_assault from our rotation. Licensed CC
+#   BY-NC-ND 4.0, and the GameBanana uploader says he isn't the original author, so we don't
+#   have a clear right to redistribute it over FastDL.
+# - A cs_rio "night" retexture: the bundled content/RIODME.txt forbids redistributing modified
+#   versions or using the map/textures as a base for another map.
+# - HD variants with a different BSP name (css_inferno2x2, fy_iceworld_revamp,
+#   gg_mini_dust2_rmk, "fy_pool_day HD"): these are new maps, not drop-in retextures — FastDL
+#   never re-pushes a file a client already has by name, so a same-named "HD" swap can't work
+#   here. Adding any of them means treating it like any other new map (license, checksum, and a
+#   PodBot waypoint of its own), not as a reskin of an existing one.
+
+# Overview (.txt + .bmp/.tga radar) audit, 2026-10-08: every archive above was downloaded and
+# inspected directly, not inferred from file names. de_dust2_2x2, cs_chaves, gg_lego,
+# gg_mini_dust2, zm_toxic_house_b and zm_ice_attack ship no overviews/ folder, and no other
+# GameBanana upload shares their exact .bsp (checked by file size/hash), so they're left without
+# one: clients will see "Using default values for overview mode." and the default green-grid
+# radar until a verified-matching overview turns up. fy_pool_day, fy_iceworld and awp_india got a
+# sourced overview instead — see the comment above each entry.
