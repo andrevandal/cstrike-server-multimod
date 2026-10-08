@@ -72,7 +72,7 @@ RUN set -eu; \
     rm -rf /tmp/pkg; \
     curl -fsSL "$FY_POOL_DAY_PWF_URL" -o "$HLDS_DIR/cstrike/addons/podbot/wptdefault/fy_pool_day.pwf"; \
     echo "$FY_POOL_DAY_PWF_SHA256  $HLDS_DIR/cstrike/addons/podbot/wptdefault/fy_pool_day.pwf" | sha256sum -c -; \
-    sed -i -e '/^pb add /d' -e 's/^pb_minbotskill .*/pb_minbotskill 80/' -e 's/^pb_maxbotskill .*/pb_maxbotskill 90/' "$HLDS_DIR/cstrike/addons/podbot/podbot.cfg"; \
+    sed -i -e '/^pb add /d' -e 's/^pb_minbotskill .*/pb_minbotskill 80/' -e 's/^pb_maxbotskill .*/pb_maxbotskill 90/' -e 's/^pb_detailnames .*/pb_detailnames 0/' "$HLDS_DIR/cstrike/addons/podbot/podbot.cfg"; \
     bp="https://raw.githubusercontent.com/PluginyCS/BasePack/$BASEPACK_REF/cstrike/addons/whblocker"; \
     mkdir -p "$HLDS_DIR/cstrike/addons/whblocker"; \
     curl -fsSL "$bp/whblocker_mm_i386.so" -o "$HLDS_DIR/cstrike/addons/whblocker/whblocker_mm_i386.so"; \

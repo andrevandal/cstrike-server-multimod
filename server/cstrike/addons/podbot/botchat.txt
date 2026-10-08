@@ -1,0 +1,375 @@
+# PT-BR PodBot chat file for this server.
+# Base translation (BOMBPLANT/KILLED/DEADCHAT) by
+# =[-AWP-]=Freak <efness@bol.com.br> (PodBot V3B24 botchats/BotChatPortuguese.txt).
+# REPLIES/UNKNOWN sections were left in English upstream; translated here so every
+# line the bots can say is PT-BR. @KEY tokens are left as-is (loanwords Brazilian
+# CS players actually type: "cheat", "camper", "lag", "clan", "server"...).
+# All comments start with a "#" char
+# You can write as much comments as you like, but
+# please avoid using tabs, whitespaces and blank lines
+# (they will be parsed out but you never know!)
+# Also be sure that a Line doesn't exceed 80 chars
+# (including carriage return)
+#
+# Messages for each Type of Chat begin with a marker
+# enclosed in []
+# Marker Types:
+# [BOMBPLANT] Holds the Messages for the Counter Terrorists
+#	      if a Bomb got planted
+# [KILLED]    Bots say this Message if they killed somebody
+# [DEADCHAT]  Bots say these Lines if they are dead and in
+#	      Spectator Mode
+#
+#
+#
+#
+# Counter Messages for Bomb planted:
+# Minimum Number is 1
+#
+[BOMBPLANT]
+Jeeesusss Cristo, denovo nao!
+Explodam outra coisa, merdas !
+Da ultima vez levei 5 segundos para achar e desarmar...
+Ei, o fio vermelho ou o fio azul ?
+...E meu coracao vai buuuum *sorriso*
+#
+#
+#
+#
+#
+#
+# Messages after killing somebody:
+# Minimum Number is 1
+# For the %v the name of the victim will
+# be inserted
+#
+[KILLED]
+%v, voce nao eh pareo para mim !
+Desculpe, %v. Voce apareceu no meu caminho.
+Voce cai para tras muito bem, %v.
+Tive que fazer isso, %v. Voce entende.
+Voce devia ter fugido enquanto teve a chance, %v.
+Eu sempre fui melhor, %v. Sempre.
+Aposto que voce odeia quando isso acontece, nao, %v?
+Isso vai lhe ensinar, %v !
+Ei, vamos la, %v! Voce quase me feriu dessa vez.
+Ha...ha!
+Voce nao eh nada, %v. Nada mesmo.
+%v Me preocupo com voce...
+Desculpe %v, meu comando de tiro na cabeca eh melhor que o seu.
+#
+#
+#
+#
+#
+#
+#
+# Chat Messages when dead and bored
+# !!Minimum Number is 9!!
+#
+[DEADCHAT]
+Me faz doente olhar para esses tolos
+Ta na hora de trocar de mapa, nao ?
+Esses campers perdedores !
+Estou com tanto tedioooo !
+Com certeza vamos vencer :)
+Ser um espectador eh foda...
+Espero que alguem bom junte-se ao servidor.
+Aquilo pareceu doloroso.
+Isso eh divertido.
+Eu nao sabia que era possivel jogar ruim desse jeito.
+Porque todos continuam tentando me ferir :)
+Visitem http://www.geocities.com/countfloyd_1999/
+Meu pulso ja ta doendo...
+Esse mapa eh uma bosta...
+Estou num mal dia
+Morte a todos os campers !
+Eles nao vao parar de campear ?
+Sou melhor em Quake 3, com certeza!
+Voce nao acha que o Android Bot continua melhor ?
+Botman deve ser um cara legal...
+Bots estupidos!
+Olhe esses idiotas !
+Minha irmazinha joga melhor que isso !
+Estou tao cansado hoje...
+Eu realmente deveria ir dormir agora.
+Eu geralmente nao jogo tao ruim assim !
+DE_DUST hoje nao, por favor !
+Eu realmente odeio esse mapa :(
+Usar a sniper eh so o que eles sabem fazer.
+No proximo round vou destruir voces
+Por favor votem por uma troca de mapa !!!
+Algum dos Bots ja ta preso ?
+#32 upto here
+Buuuuuum !!! *lol*
+Insano na membrana, hehe!
+Tenho certeza que aquele cara usou um Proxy de pontaria !
+Tem bots no jogo ?
+Voce poderia me dar seu comando de tiro na cabeca ?
+Proximo round deveremos sair juntos.
+Fodam-se todos os matadores de amigos!!!
+Nao sou bom em subir escadas...
+Sobre o que eh um cla ? Nao entendo
+Voce conhece o Jumbot ? Ele realmente detona!
+Se o Botman eh legal, imagine o TheFatal entao ?
+Lag da porra !!
+Acho que o NNBot eh muito melhor que o RealBot.
+Que pena que o Android Bot demora pra renovar.
+Estou fora para um cigarro...
+Porque eles incluiram veiculos em Cs ?
+Tive que recarregar e ele me atirou na cabeca!
+
+# Start of the "dynamic" replies from here
+# After each @KEY Tag you need to specify the
+# keywords in quotation marks and uppercase. You can
+# have several keywords (aliases) each separated by a comma.
+# After the keywords line, the answers or messages to this
+# special keyword need to be given. In theory there can be an unlimited
+# number of answers of course you should care about the used memory ;)    
+
+[REPLIES]
+
+@KEY " AGAIN "
+%s, tudo sempre se repete, nao eh ?
+E tenho certeza que essa nao foi a ultima vez...
+As coisas sao assim mesmo, ne...
+
+@KEY "AIMBOT", "WALLHACK"
+%s, voce ta usando cheat ?
+Ate o PunkBuster deixa passar alguns...
+Hoje em dia nao da pra saber se o cara eh bom ou se usa cheat
+Aimbot eh irado, cala a boca %s!
+Wallhack eh coisa do capeta ;)
+
+@KEY " ALWAYS "
+Nao eh sempre nao, %s!
+Eu so gosto mesmo :-)
+Qual eh %s, foi so a segunda vez!
+
+@KEY "ANDROID"
+Ah sim, aquela epoca era boa...
+%s, esse tambem foi seu primeiro Bot ?
+Alguem sabe o que o DaTa faz hoje em dia ?
+Da pra jogar com o Android no %m, ou nao ?
+
+@KEY "BOTMAN"
+Quem eh esse tal de botman que todo mundo fala???
+Visita o site dele: http://www.planethalflife.com/botman
+Sem o codigo fonte dele varios bots nao existiriam!
+Sera que o HPB-Bot algum dia fica pronto...
+Voce ja jogou com o HPB-Bot dele ?
+
+@KEY " BOT ", "BOTS"
+Porque voce vive falando deles?
+Nao tem bot nenhum nesse servidor, %s, eu juro!
+Bot eh irado!!!
+Qual eh seu bot favorito, %s?
+Se quiser programar o seu, pergunta pro botman!
+So fala de bot, bot, bot - deveria jogar com gente de verdade.
+A maioria dos bots ainda eh muito burra!
+
+@KEY "CAMPER", "CAMPING"
+Eu odeio esses campers!
+Campear eh uma bosta!
+Voce nunca campeou tambem, %s ?
+As vezes campear eh a unica forma de ganhar...
+Eh, bom e velho Camper-Strike...
+
+@KEY "CHEAT"
+Esses cheaters desgracados tao acabando com o jogo!
+Eu acho que o %f ta usando cheat
+Eu odeio cheater!
+Usar cheat eh muito ruim!
+Porque tanta gente usa cheat?
+O Punkbuster ate que ajudava...
+Joga com bot - bot nao usa cheat!
+
+@KEY " CLAN "
+Que negocio eh esse de clan?
+Eu ja fui de um clan, mas era muito ruim.
+De que clan voce eh, %s?
+Quer entrar no nosso clan, %s?
+Jogar em clan eh coisa de quem nao tem o que fazer...
+
+@KEY " CS ", "COUNTERSTRIKE", "COUNTER-STRIKE", "CSTRIKE"
+Counter-Strike ta meio chato hoje em dia...
+%s, ha quanto tempo voce joga CS ?
+CS desde a primeira beta, sempre!
+Tem noob demais jogando.
+Muita gente usando cheat no CS
+Nao eh tao divertido quanto era antes
+
+@KEY " DOD ", "DAY OF DEFEAT"
+Eu nao entendo o que o pessoal ve de bom no DoD
+CS sempre, sempre...
+%s, acha que vai ficar tao popular quanto CS ?
+%s, voce prefere DoD do que CS ?
+Day of Defeat eh um MOD sem futuro, na minha opiniao.
+
+@KEY " ENGINE "
+Ouvi dizer que a engine do HL eh uma mistura de Quake1 com Quake2, estranho ne?
+%s, voce nao sente saudade de quando engine era so Software Engine ?
+A engine do HL ainda eh muito boa, apesar da idade...
+Faz a sua propria engine, %s !
+
+@KEY "FUCK", "DAMN", "PISS"
+Nao xinga, %s!
+Feio isso, %s!
+Eh, voce tem razao, %s. Agora CALA A BOCA!
+Cuidado com a boca, %s!
+%s, nao fala mais essa palavra - eh falta de educacao!
+
+@KEY "HEHE", "HAHA", "LOL", ":)"
+Que bom que pelo menos voce ta se divertindo, %s...
+Aproveita enquanto pode, %s!
+Muito engracado mesmo, %s...
+Boa essa, %s!
+
+@KEY "I THINK ", "I BELIEVE "
+Voce pensa demais, %s ;-)
+E eu acho que voce devia calar a boca e jogar!
+Voce acredita mesmo nisso, %s?
+Porque voce acha isso?
+Me passa seu ICQ, %s
+
+@KEY "JOEBOT"
+Eh, o JoeBot nao eh ruim...
+Engracado que o JoeBot ficou famoso quando o NNBot parou...
+Sera onde mais dava pra usar Redes Neurais
+Entao voce acha o JoeBot irado ?
+
+@KEY "JUMBOT"
+JB ? Era bom antigamente mas o ParaBot eh bem melhor agora!
+A vantagem do JB era ser um MOD, nao uma DLL hookada
+Ah sim, Jumbot e o The Fatal. Sera o que ele anda fazendo agora.
+Dizem por ai que o The Fatal agora faz Bots de AHL ?
+
+@KEY " MUSIC ", " BAND "
+Hmm...nao ligo desde que nao seja aquela bosta comercial
+Electro Polka underground eh o verdadeiro som!
+Voce ainda usa Napster, %s ?
+Alguem tem link bom de MP3 ?
+
+@KEY "NNBOT"
+Uma pena o NNBot ter parado...
+Tenta o JoeBot se voce gostava do NNBot, %s
+%s, voce ouviu falar do novo MOD do Ditlew ?
+
+@KEY "PARABOT"
+ParaBot eh o bot de Deathmatch mais irado que eu ja joguei
+%s voce deveria testar o ParaBot, eh otimo!
+Que pena que nenhum CSBot tem a navegacao boa do Parabot ainda
+Ouvi dizer que ja suporta 3 MODs de HL
+
+@KEY " PING ", "LAGG"
+Meu ping sempre eh 5, eu tenho DSL !!
+Minha conexao eh uma bosta...
+De onde voce eh, %s ?
+Joga offline com Bot se sua conexao eh ruim
+Troca de provedor, %s!
+
+@KEY "POD-BOT", " POD ", "PODBOT"
+Ouvi dizer que eh o melhor Bot pra CS, mas nao tenho certeza...
+Eh, ele manda muito bem !
+Falam que ele usa um tipo de wallhack, sera que eh verdade ?
+
+@KEY "PUNKBUSTER"
+Nao seja um PUNK! (apoie www.punkbuster.com)
+Eu sempre travo quando uso PunkBuster
+O Tony Ray do PB eh meio esquisito...
+
+@KEY "Q3", "QUAKE"
+A iluminacao do Q3 eh ruim na minha opiniao
+Half-Life ainda manda muito, %s!
+Voce ja ouviu falar de DMC, %s? ;-)
+
+@KEY "REALBOT"
+Ele eh bom, %s?
+O RB ainda nao usa waypoint, %s ?
+Eh, eu lembro do RB. Foi o primeiro bot sem waypoint, ne ?
+Ouvi dizer que o RB agora tenta fazer tipo o ParaBot ?!?
+Antigamente chamavam ele de 'os abraca-parede'
+
+@KEY "SCRIPT"
+Script eh coisa de perdedor
+%s, voce deve nem saber fazer um bind, ne ?
+Voce sabia que ate comprar script eh considerado cheat ?
+
+@KEY "SERVER"
+Eu sempre to nesse Servidor
+Eu e meus amigos jogamos muito nesse Servidor
+Eu acho que esse Servidor tem uma rotacao de mapas boa
+
+@KEY "SORRY"
+Eh, depois todo mundo diz que sente muito!
+Desculpa nao resolve agora, %s!
+Da proxima vez pensa antes de fazer, %s!
+Eu tambem sinto muito!
+Voce nem imagina o quanto vai se arrepender disso...
+
+@KEY "TEAMKILL", " TK "
+Teamkiller devia ser banido desse servidor.
+Quem foi o teamkiller, %s ?
+Eu gosto de esfaquear meu time, MWUHAHA!!
+Foi o %t que te matou ? Ele faz isso sempre!
+Cade o Admin ? Ele que resolve isso...
+%s so espera %r e devolve pra ele!
+
+@KEY "TIRED", "SLEEP"
+Vai dormir, %s
+Descansa um pouco, %s...
+Quer um cafe, %s?
+Ah qual eh, %s ! So mais uma partida...
+
+@KEY "VOTE", "MAPCHANGE"
+Nao, eu gosto do %m
+Eh so porque voce vive morrendo, %s ?
+%m eh otimo, cala a boca!
+%m detona!
+Eh. Deveriamos votar agora.
+
+@KEY "WHAT ", "WHY ", "WHERE ", "WHO ", "WHEN ", "HOW "
+Voce nunca vai descobrir, %s!
+Eh, isso eh muito estranho, %s...
+A resposta ta por ai, %s ;-)
+Nao faco ideia, %s
+Sei la.
+O que voce acha, %s?
+Nao vou te contar, %s!
+Descobre voce mesmo, %s!
+Boa pergunta, %s!
+
+[UNKNOWN]
+Bla bla bla...
+O que voce disse, %s?
+Se concentra no jogo, %s!
+Jogar...digo, conversar com voce, %s eh muito bom!
+Essas mensagens de chat tao me deixando doido!
+Nao faz spam, %s!
+Como voce arruma tempo pra digitar essa bosta toda???
+Eh, %s. Voce tem razao!
+De jeito nenhum, %s...
+De onde voce eh, %s?
+Nao acredito que voce consegue jogar e digitar ao mesmo tempo, %s!
+Tem certeza, %s?
+Entendi, %s!
+Porque todo mundo sempre fala a mesma coisa???
+Do que diabos voce ta falando, %s?
+Ei, cala a boca e joga, %s!
+Voce falou alguma coisa, %s?
+Quem disse isso?
+Ah, serio?
+Muito engracado, %s!
+Eu sou do melhor clan do meu pais!
+Eu odeio esses comentarios idiotas, %s!
+Alguem sabe fazer o pulo da Gauss?
+ZZZZZZZzzzzzz
+E ai, beleza?
+To mooorrendo de tedio...
+Voce tem ICQ, %s?
+Ta muito lento hoje...
+Mds, voce eh estranho!
+Voce quer jogar ou ficar de papo o tempo todo ?
+Eu nem quero saber, %s
+Certamente.
+Hein? Que isso ?
