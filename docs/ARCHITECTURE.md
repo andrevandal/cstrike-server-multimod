@@ -12,7 +12,7 @@ A Counter-Strike 1.6 server for friends where the **map prefix picks the game mo
 | Scripting | **AMX Mod X 1.10** + **ReAPI** | Admin, votes, stats, per-map plugin loading |
 | Dual protocol (on by default) | **Reunion** (official GitHub release, fetched at build) | Lets non-Steam clients (protocol 47/48) join |
 | Anti-cheat (on by default) | **WHBlocker** (PluginyCS/BasePack copy, fetched at build, SHA-256 checked) | Server-side wallhack blocking (doesn't send occluded entities) |
-| Bots | **PodBot MM V3B24** (upstream release, SHA-256 checked) | Loaded globally, manually populated only on maps with a waypoint; `fy_pool_day` includes a checksum-pinned waypoint |
+| Bots | **PodBot MM V3B24** (upstream release, SHA-256 checked) | Loaded globally, manually populated only on maps with a waypoint; `fy_pool_day` includes a checksum-pinned waypoint. Chat and bot names are overlaid PT-BR (`server/cstrike/addons/podbot/botchat.txt`, `botnames.txt`) |
 
 Versions are pinned as `ARG`s in `server/Dockerfile`; `scripts/update-versions.sh` bumps them to the latest stable releases. HLDS itself comes from steamcmd (app 90, `steam_legacy` branch).
 
@@ -85,7 +85,14 @@ Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`,
 **Galileo** (end-of-map vote, `rtv` at 51%, `nominate`), `bullet_damage`, `say_resetscore` (`/rs`), `sank_sounds` (keywords in `configs/SND-LIST.CFG`).
 `mapchooser.amxx` and `nextmap.amxx` are disabled because Galileo replaces them; `restmenu.amxx` stays disabled because it prevents PodBot from selecting a team.
 
-PodBot is a global Metamod module. It never auto-adds bots because the rotation contains maps without a matching `.pwf`. AMXX exposes `pb_add`, `pb_fillserver`, and `pb_removebots` only to full admins (`ADMIN_RCON`); `fy_pool_day` is bundled with a waypoint.
+**In-game admin menu.** `nostalgia_adminmenu.amxx` provides a fast, categorized radio-style menu triggered via
+chat `say /admin` or `say /menu` (or console `adminmenu`): submenus for Bots (`pb add`, `pb fillserver`, difficulty cycle),
+Match Control (`sv_restart`, `mp_friendlyfire`, `sv_alltalk`, `mp_freezetime`, pause), Fun Cvars (`sv_gravity`), Maps/RTV
+(`amx_mapmenu`, `gal_startvote`, `gal_cancelvote`) and Players (shortcuts to `amx_kickmenu`, `amx_banmenu`, etc.).
+Stock `amxmodmenu` also remains available via console, and `cmds.ini` mirrors the bot commands for `amx_cmdmenu`.
+Bot and RCON-level actions require flag `l` (`ADMIN_RCON`).
+
+PodBot is a global Metamod module. It never auto-adds bots because the rotation contains maps without a matching `.pwf`. AMXX exposes `pb_add`, `pb_fillserver`, and `pb_removebots` only to full admins (`ADMIN_RCON`); `fy_pool_day` is bundled with a waypoint. `server/cstrike/addons/podbot/botchat.txt` and `botnames.txt` overlay PodBot's fetched defaults (the `COPY cstrike/` layer runs after the PodBot install, so these win): chat is PT-BR, and names already carry a `[BOT]` tag because `pb_detailnames 0` (set by the `server/Dockerfile` sed) turns off PodBot's own `[POD]`/`[P*D]`/`[P0D]` prefix and skill suffix.
 
 **Player votes.** `amx_default_access "jz"` gives every player the ADMIN_VOTE flag, so anyone can run the stock
 `amx_votekick`, `amx_voteban` and `amx_votemap`, with a 51–60% ratio and a 90 s cooldown.

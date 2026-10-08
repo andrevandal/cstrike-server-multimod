@@ -45,11 +45,13 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 |---|---|
 | Lock / unlock the server | Set `SV_PASSWORD` and restart, or `rcon sv_password "x"` (lasts until the next map change) |
 | Admins / moderators | `ADMINS` / `MODERATORS` = comma-separated SteamIDs (`STEAM_0:Y:Z`), then restart. Seeded admin: `STEAM_0:1:26191905` (SteamID64 `76561198012649539`) |
+| In-game admin menu | Connect with an admin/moderator SteamID: type `say /admin` (or `say /menu`, or console `adminmenu`) for the categorized Nostalgia menu (Bots, Match, Fun/Deathmatch, Maps/RTV, Players), or console `amxmodmenu` for stock AMXX menus. Deathmatch mode can also be toggled directly with `say /dm` |
 | Anti-cheat | On by default (WHBlocker, fetched at build); `ANTICHEAT_ENABLED=0` to turn off |
 | Non-Steam clients | On by default (Reunion is fetched at build); salt auto-generated in `state/reunion_salt` unless `REUNION_SALT` is set; `REUNION_ENABLED=0` to turn off |
-| Bots | PodBot loads without auto-spawning. Full admins use `pb_add`, `pb_fillserver`, or `pb_removebots` on maps with a waypoint; `fy_pool_day` ships with a checksum-pinned waypoint |
+| Bots | PodBot loads without auto-spawning. Full admins use `pb_add`, `pb_fillserver`, or `pb_removebots` on maps with a waypoint; `fy_pool_day` ships with a checksum-pinned waypoint. Chat is PT-BR (`botchat.txt`) rate-limited to avoid spam (`pb_chat_interval 20.0`), bot flashlights are suppressed, and names carry a `[BOT]` tag (`botnames.txt`, `pb_detailnames 0`) |
 | Add a map | Add `<map> <url>` to `content/maps.txt` and run the bootstrap; list it in `server/cstrike/mapcycle.all.txt`, redeploy |
 | Check FastDL | `curl -I http://fastdl.vandal.services:8080/maps/cs_rio.bsp` → `200`, no `Location` header |
+| Repack client assets | `scripts/package-client-assets.sh` zips `content/` into `content/client-assets.zip`, linked from the MOTD; rerun after any map/asset change, then `docker compose restart fastdl` |
 | Manual backup | `docker compose exec backup backup` |
 | Restore | `scripts/restore.sh backups/cs16-state-<ts>.tar.gz` (on Coolify: `CSTRIKE_CONTAINER=<name> scripts/restore.sh …`) |
 | Update engine/modules | `scripts/update-versions.sh` bumps the `ARG` pins in `server/Dockerfile` to the latest stable releases (ReHLDS, ReGameDLL, Metamod-r, ReAPI, Reunion, PodBot, newest AMXX 1.10 build, WHBlocker from the newest PluginyCS/BasePack release). Review the diff, `docker compose build cstrike`, boot it, check logs, commit |
