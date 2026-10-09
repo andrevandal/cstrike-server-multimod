@@ -6,8 +6,6 @@
 #define VERSION "1.0.0"
 #define AUTHOR "cstrike-server-multimod"
 
-new g_iSavedMoney[MAX_PLAYERS + 1];
-new bool:g_bHasSavedMoney[MAX_PLAYERS + 1];
 public plugin_init()
 {
     register_plugin(PLUGIN, VERSION, AUTHOR);
@@ -21,20 +19,27 @@ public plugin_init()
     register_clcmd("say /deathmatch", "cmd_ToggleDM");
     register_clcmd("say_team /dm", "cmd_ToggleDM");
     register_clcmd("amx_dm", "cmd_ToggleDM", ADMIN_CVAR, "- ativa ou desativa modo Deathmatch");
+    register_concmd("amx_money16k", "cmd_Money16k", ADMIN_RCON, "- set every connected player to $16,000");
     RegisterHookChain(RG_CBasePlayer_Spawn, "OnPlayerSpawn", .post = true);
-    RegisterHookChain(RG_CBasePlayer_Killed, "OnPlayerKilled", .post = false);
 }
 
-public client_putinserver(id)
+public cmd_Money16k(id, level, cid)
 {
-    g_iSavedMoney[id] = 16000;
-    g_bHasSavedMoney[id] = false;
-}
+    if (!cmd_access(id, level, cid, 1))
+        return PLUGIN_HANDLED;
 
-public client_disconnected(id)
-{
-    g_iSavedMoney[id] = 0;
-    g_bHasSavedMoney[id] = false;
+    new count;
+    for (new player = 1; player <= MaxClients; player++)
+    {
+        if (!is_user_connected(player))
+            continue;
+
+        cs_set_user_money(player, 16000);
+        count++;
+    }
+
+    client_print(0, print_chat, "[DM] $16,000 definido para %d jogadores.", count);
+    return PLUGIN_HANDLED;
 }
 
 public cmd_MainMenu(id)
@@ -492,15 +497,12 @@ ToggleDMMode()
     if (dm_respawn <= 0)
     {
         // Turn ON TDM
-        server_cmd("mp_forcerespawn 1.5; mp_respawn_immunitytime 2; mp_round_infinite 1; mp_free_armor 2; mp_buy_anywhere 1; mp_buytime 9999; mp_refill_bpammo_weapons 1; mp_auto_reload_weapons 1; mp_startmoney 16000; mp_maxmoney 16000; mp_freeforall 0; mp_freezetime 0; sv_restart 1");
+        server_cmd("mp_forcerespawn 1.5; mp_respawn_immunitytime 2; mp_round_infinite 1; mp_free_armor 2; mp_buy_anywhere 1; mp_buytime 9999; mp_refill_bpammo_weapons 2; mp_auto_reload_weapons 1; mp_startmoney 16000; mp_maxmoney 16000; mp_item_staytime 20; mp_freeforall 0; mp_freezetime 0; sv_restart 1");
         new players[MAX_PLAYERS], num;
         get_players(players, num, "ch");
         for (new i = 0; i < num; i++)
         {
-            new pl = players[i];
-            cs_set_user_money(pl, 16000);
-            g_iSavedMoney[pl] = 16000;
-            g_bHasSavedMoney[pl] = true;
+            cs_set_user_money(players[i], 16000);
         }
         client_print(0, print_chat, "[DM] Modo Deathmatch ATIVADO (TDM)! Respawn rapido e rounds infinitos.");
     }
@@ -513,24 +515,8 @@ ToggleDMMode()
     else
     {
         // Turn OFF -> Classic
-        server_cmd("mp_forcerespawn 0; mp_respawn_immunitytime 0; mp_round_infinite 0; mp_free_armor 0; mp_buy_anywhere 0; mp_buytime 0.25; mp_refill_bpammo_weapons 0; mp_auto_reload_weapons 0; mp_startmoney 800; mp_maxmoney 16000; mp_freeforall 0; mp_freezetime 2; sv_restart 1");
-        new players[MAX_PLAYERS], num;
-        get_players(players, num, "ch");
-        for (new i = 0; i < num; i++)
-        {
-            g_bHasSavedMoney[players[i]] = false;
-        }
+        server_cmd("mp_forcerespawn 0; mp_respawn_immunitytime 0; mp_round_infinite 0; mp_free_armor 0; mp_buy_anywhere 0; mp_buytime 0.25; mp_refill_bpammo_weapons 0; mp_auto_reload_weapons 0; mp_startmoney 800; mp_maxmoney 16000; mp_item_staytime 300; mp_freeforall 0; mp_freezetime 2; sv_restart 1");
         client_print(0, print_chat, "[DM] Modo Deathmatch DESLIGADO. Modo classico restaurado.");
-    }
-}
-
-public OnPlayerKilled(const victim, const attacker, const shouldgib)
-{
-    if (is_user_connected(victim) && get_cvar_num("mp_forcerespawn") > 0)
-    {
-        // Save money when player dies so it persists across deaths
-        g_iSavedMoney[victim] = cs_get_user_money(victim);
-        g_bHasSavedMoney[victim] = true;
     }
 }
 
@@ -541,17 +527,6 @@ public OnPlayerSpawn(const id)
 
     if (get_cvar_num("mp_forcerespawn") > 0)
     {
-        if (g_bHasSavedMoney[id])
-        {
-            // Restore money saved between deaths
-            cs_set_user_money(id, g_iSavedMoney[id]);
-        }
-        else
-        {
-            // First spawn in DM: start with $16,000
-            cs_set_user_money(id, 16000);
-            g_iSavedMoney[id] = 16000;
-            g_bHasSavedMoney[id] = true;
-        }
+        cs_set_user_money(id, 16000);
     }
 }
