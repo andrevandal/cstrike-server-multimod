@@ -8028,7 +8028,7 @@ static bool: QS_ProcessPlayerDeath(nKiller, &nVictim, &nWeapon, &nPlace, &nTeamK
         ///
         /// SUICIDE EVENT
         ///
-        if (g_bSuicide)
+        if (g_bSuicide && !QS_IsPunishKill(nVictim))
         {
             if (g_bSuicideMsg)
             {
@@ -8040,7 +8040,7 @@ static bool: QS_ProcessPlayerDeath(nKiller, &nVictim, &nWeapon, &nPlace, &nTeamK
                 QS_ShowHiddenHudMsg(QS_EVERYONE);
             }
 
-            QS_ClientCmd(QS_EVERYONE, "SPK \"%a\"", ArrayGetStringHandle(g_pSuicide, random_num(0, g_nSuicideSize - 1)));
+            QS_ClientCmd(nVictim, "SPK \"%a\"", ArrayGetStringHandle(g_pSuicide, random_num(0, g_nSuicideSize - 1)));
         }
 
         ///
@@ -10422,6 +10422,21 @@ static bool: QS_ShowHiddenHudMsgAll(nTo)
     }
 
     return true;
+}
+
+///
+/// NOSTALGIA: TRUE IF nostalgia_punish KILLED THIS PLAYER ( ADMIN LIGHTNING, NOT A REAL SUICIDE )
+///
+static bool: QS_IsPunishKill(nPlayer)
+{
+    static nXVar = -2;
+
+    if (nXVar == -2)
+    {
+        nXVar = get_xvar_id("NostalgiaPunishKills");
+    }
+
+    return (nXVar != -1) && ((get_xvar_num(nXVar) & (1 << (nPlayer - 1))) != 0);
 }
 
 ///
