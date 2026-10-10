@@ -1,0 +1,11 @@
+name: "Init CI/CD environment"
+description: "Install the toolchain pinned in .prototools (python, uv)"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: "moonrepo/setup-toolchain@v0.6.4"
+      with:
+        auto-install: true
+        cache-base: main
+        cache-version: ${{ hashFiles('.prototools') }}
