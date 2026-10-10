@@ -22,6 +22,11 @@
 #define TICK_SECONDS 0.1
 #define TASK_TICK 7300
 #define TASK_REAPPLY 7400
+#define TASK_PUNISH_KILL 7500
+
+// Bit (1 << (id - 1)) is set while a lightning death is being announced. AQS reads
+// it through get_xvar_num() and skips its suicide event for admin kills.
+public NostalgiaPunishKills;
 
 enum
 {
@@ -298,7 +303,15 @@ lightning(id)
     message_end();
 
     emit_sound(id, CHAN_AUTO, FxSound[FX_LIGHT], 1.0, ATTN_NORM, 0, PITCH_NORM);
+    NostalgiaPunishKills |= (1 << (id - 1));
+    remove_task(TASK_PUNISH_KILL + id);
+    set_task(1.0, "ClearPunishKill", TASK_PUNISH_KILL + id);
     user_kill(id, 1);
+}
+
+public ClearPunishKill(taskid)
+{
+    NostalgiaPunishKills &= ~(1 << (taskid - TASK_PUNISH_KILL - 1));
 }
 
 // ==========================================
