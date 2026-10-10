@@ -6,6 +6,7 @@ Prints PASS/FAIL per case and exits 1 if any case fails.
 """
 import os
 import re
+import shlex
 import signal
 import subprocess
 import sys
@@ -28,6 +29,7 @@ PLUGINS = [
 BOT_LINE = re.compile(r'^#\s*\d+ "\[BOT\]')
 SUICIDE = 'committed suicide with "world"'
 DRAIN_MESSAGE = "SIGTERM received: draining"
+MAPCHANGE = re.compile(r"Mapchange to (\S+)")
 
 DM_CVARS = {"mp_forcerespawn": "1.5", "mp_round_infinite": "1", "mp_startmoney": "16000"}
 CLASSIC_CVARS = {"mp_forcerespawn": "0.000000", "mp_round_infinite": "0", "mp_startmoney": "800"}
@@ -50,17 +52,27 @@ def report(name, ok, detail=""):
 
 
 class Server:
-    def __init__(self, map_name):
+    def __init__(self, map_name, saved_next_map=None):
         self.name = f"it-{uuid.uuid4().hex[:12]}"
         self.lines = []
         self.cv = threading.Condition()
+        command = [
+            "docker", "run", "--rm", "-i", "--name", self.name,
+            "-e", "RCON_PASSWORD=test",
+            "-e", f"START_MAP={map_name}",
+        ]
+        if saved_next_map is None:
+            command.append(IMAGE)
+        else:
+            # Seed /state the way a drain leaves it (no trailing newline), then boot as usual.
+            seed = (
+                "mkdir -p /state && "
+                f"printf %s {shlex.quote(saved_next_map)} > /state/nostalgia-next-map && "
+                "exec /usr/local/bin/entrypoint.sh"
+            )
+            command += ["--entrypoint", "/bin/bash", IMAGE, "-c", seed]
         self.proc = subprocess.Popen(
-            [
-                "docker", "run", "--rm", "-i", "--name", self.name,
-                "-e", "RCON_PASSWORD=test",
-                "-e", f"START_MAP={map_name}",
-                IMAGE,
-            ],
+            command,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -118,9 +130,9 @@ def run_case(fn, srv):
         return False, f"error: {exc!r}"
 
 
-def run_scenario(map_name, boot_wait, cases):
+def run_scenario(map_name, boot_wait, cases, saved_next_map=None):
     print(f"-- scenario map={map_name} boot_wait={boot_wait}s", flush=True)
-    srv = Server(map_name)
+    srv = Server(map_name, saved_next_map)
     done = 0
     try:
         signal.alarm(SCENARIO_TIMEOUT)
@@ -207,6 +219,38 @@ def drain_bots_only(srv):
     return ok, f"rc={rc}, drain message {'seen' if saw_drain else 'missing'}"
 
 
+def first_boot_map(srv, timeout=60):
+    """Name of the first map the server loads, or None if none loads within `timeout` seconds."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        for line in srv.since(0):
+            match = MAPCHANGE.search(line)
+            if match:
+                return match.group(1)
+        time.sleep(0.5)
+    return None
+
+
+def saved_map_consumed(srv):
+    return "nostalgia-next-map" not in srv.docker_exec("ls /state")
+
+
+def boots_on_saved_map(srv):
+    loaded = first_boot_map(srv)
+    consumed = saved_map_consumed(srv)
+    ok = loaded == "as_oilrig" and consumed
+    return ok, f"booted {loaded}, want as_oilrig; saved file {'consumed' if consumed else 'left behind'}"
+
+
+def ignores_missing_saved_map(srv):
+    loaded = first_boot_map(srv)
+    consumed = saved_map_consumed(srv)
+    warned = any("ignoring saved next map" in line for line in srv.since(0))
+    ok = loaded == "de_dust2" and consumed and warned
+    return ok, f"booted {loaded}, want de_dust2; saved file {'consumed' if consumed else 'left behind'}; warning {'seen' if warned else 'missing'}"
+
+
+
 def main():
     signal.signal(signal.SIGALRM, on_alarm)
 
@@ -221,6 +265,8 @@ def main():
         75,
         [("bot_fill", bot_fill), ("punish_light", punish_light), ("drain_bots_only", drain_bots_only)],
     )
+    run_scenario("de_dust2", 0, [("boots_on_saved_map", boots_on_saved_map)], saved_next_map="as_oilrig")
+    run_scenario("de_dust2", 0, [("ignores_missing_saved_map", ignores_missing_saved_map)], saved_next_map="no_such_map")
 
     failed = [name for name, ok in results if not ok]
     print(f"{len(results) - len(failed)}/{len(results)} integration cases passed", flush=True)

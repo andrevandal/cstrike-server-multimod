@@ -62,8 +62,9 @@ The HLDS game loop is single-threaded. Two CPUs leave one core free for 1000 Hz 
 3. Symlink the state files into `/state` and the logs into `/logs`.
 4. Symlink `/content` into `cstrike/` (no copying) and prune links whose target was removed.
 5. Write `mapcycle.txt` from `mapcycle.all.txt`, keeping only maps whose `.bsp` exists, so votes never pick a missing map.
-6. Log a warning for every plugin named in `plugins*.ini` that isn't installed.
-7. Drop to the `hlds` user and run `hlds_linux` with `+sys_ticrate 1000`.
+6. Start on the map voted before the last restart, if `/state/nostalgia-next-map` names an installed map (the file is deleted either way; otherwise `START_MAP` applies).
+7. Log a warning for every plugin named in `plugins*.ini` that isn't installed.
+8. Drop to the `hlds` user and run `hlds_linux` with `+sys_ticrate 1000`.
 
 ## 4. Gameplay: mode per map
 
@@ -107,6 +108,7 @@ AMXX has no database server. State is in flat files, and all of it is in `./stat
 | `amxx/vault/` | nVault (mod progress, e.g. ZP ammo packs) |
 | `banned.cfg`, `listip.cfg` | SteamID / IP bans |
 | `reunion_salt` | Auto-generated Reunion salt (when `REUNION_SALT` is unset); non-Steam IDs depend on it |
+| `nostalgia-next-map` | Map voted during a drain; read once on the next boot, then deleted |
 
 Admins are **not** state: they come from `ADMINS` (default `STEAM_0:1:26191905`) / `MODERATORS`.
 Logs go to `./logs` and are not backed up. Maps and configs are rebuilt from git and `./content`.
