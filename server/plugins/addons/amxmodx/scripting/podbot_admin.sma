@@ -4,12 +4,20 @@
 #include <reapi>
 
 #define PLUGIN "PodBot Admin"
-#define VERSION "1.2.0"
+#define VERSION "1.3.0"
 #define AUTHOR "cstrike-server-multimod"
+
+#define TASK_RECONCILE 7100
+#define RECONCILE_DELAY 3.0
+#define MAP_START_DELAY 15.0
+#define SETTLE_SECONDS 8.0
 
 new g_pCvarInterval;
 new g_pCvarChance;
 new g_pCvarAutoBalance;
+new g_pCvarMinPlayers;
+new g_iBigTeam;
+new Float:g_fSettleUntil;
 new Float:g_fLastBotChat;
 public plugin_init()
 {
@@ -28,7 +36,10 @@ public plugin_init()
     g_pCvarInterval = register_cvar("pb_chat_interval", "20.0");
     g_pCvarChance = register_cvar("pb_chat_chance", "30");
     g_pCvarAutoBalance = register_cvar("pb_autobalance", "1");
-    set_task(5.0, "BalanceTeams", .flags = "b");
+    g_pCvarMinPlayers = register_cvar("pb_minplayers", "10");
+
+    // Humans joining, leaving or switching team trigger a debounced bot reconcile.
+    register_event("TeamInfo", "OnTeamInfo", "a");
 
     register_clcmd("say", "handle_say");
     register_clcmd("say_team", "handle_say_team");
@@ -222,71 +233,126 @@ public command_balance(id, level, cid)
     if (!cmd_access(id, level, cid, 1))
         return PLUGIN_HANDLED;
 
-    balanceTeams(true);
-    client_print(id, print_console, "[PodBot] Team balance checked.");
+    reconcileBots(true);
+    client_print(id, print_console, "[PodBot] Bot count and team balance reconciled.");
     return PLUGIN_HANDLED;
 }
 
-public BalanceTeams()
+public plugin_cfg()
 {
-    balanceTeams(false);
+    // Team that gets the extra player when the target is odd, picked once per map.
+    g_iBigTeam = random_num(1, 2);
+    scheduleReconcile(MAP_START_DELAY);
 }
 
-balanceTeams(const bool:force)
+public client_putinserver(id)
 {
-    if ((!force && !get_pcvar_num(g_pCvarAutoBalance)) || get_cvar_num("mp_freeforall"))
+    if (!is_user_bot(id))
+        scheduleReconcile(RECONCILE_DELAY);
+}
+
+public client_disconnected(id)
+{
+    if (!is_user_bot(id))
+        scheduleReconcile(RECONCILE_DELAY);
+}
+
+public OnTeamInfo()
+{
+    new id = read_data(1);
+    if (id >= 1 && id <= MaxClients && !is_user_bot(id))
+        scheduleReconcile(RECONCILE_DELAY);
+}
+
+// Debounce: every new event cancels the pending pass and restarts the timer.
+scheduleReconcile(const Float:delay)
+{
+    remove_task(TASK_RECONCILE);
+    set_task(delay, "Reconcile", TASK_RECONCILE);
+}
+
+public Reconcile()
+{
+    reconcileBots(false);
+}
+
+// Bots stay at pb_minplayers - 1 (9) no matter how many humans are online; the
+// humans come on top. Team sizes (humans + bots) are kept equal, or one apart
+// when the total is odd (the extra player goes to a team picked randomly per
+// map). A human joining a team therefore shifts bots between teams, and
+// leaving shifts them back.
+reconcileBots(const bool:force)
+{
+    // pb_minplayers 0 or pb_autobalance 0 (unless forced by pb_balance) = hands off.
+    if ((!force && !get_pcvar_num(g_pCvarAutoBalance)) || get_pcvar_num(g_pCvarMinPlayers) <= 0 || get_cvar_num("mp_freeforall"))
         return;
 
-    new tPlayers, ctPlayers;
-    new tBot, ctBot;
+    // Bots from the previous pass are still joining or leaving; count again later.
+    if (get_gametime() < g_fSettleUntil)
+    {
+        scheduleReconcile(RECONCILE_DELAY);
+        return;
+    }
+
+    new humans[3], bots[3], botIds[3][MAX_PLAYERS + 1];
+    new connected;
 
     for (new id = 1; id <= MaxClients; id++)
     {
         if (!is_user_connected(id))
             continue;
 
-        switch (cs_get_user_team(id))
+        connected++;
+
+        new team = _:cs_get_user_team(id);
+        if (team != 1 && team != 2)
+            continue;
+
+        if (is_user_bot(id))
+            botIds[team][bots[team]++] = id;
+        else
+            humans[team]++;
+    }
+
+    new total = max(get_pcvar_num(g_pCvarMinPlayers) - 1, 0) + humans[1] + humans[2];
+    new size[3];
+    size[1] = total / 2;
+    size[2] = total / 2;
+    size[g_iBigTeam] += total % 2;
+
+    size[1] = max(size[1], humans[1]);
+    size[2] = max(size[2], humans[2]);
+    if (size[1] - size[2] >= 2)
+        size[2] = size[1] - 1;
+    else if (size[2] - size[1] >= 2)
+        size[1] = size[2] - 1;
+
+    new minSkill = get_cvar_num("pb_minbotskill");
+    new maxSkill = max(get_cvar_num("pb_maxbotskill"), minSkill);
+    new freeSlots = get_maxplayers() - connected;
+    new changed;
+
+    for (new team = 1; team <= 2; team++)
+    {
+        new delta = (size[team] - humans[team]) - bots[team];
+
+        for (new i = 0; i < -delta; i++)
         {
-            case CS_TEAM_T:
-            {
-                tPlayers++;
-                if (is_user_bot(id))
-                    tBot = id;
-            }
-            case CS_TEAM_CT:
-            {
-                ctPlayers++;
-                if (is_user_bot(id))
-                    ctBot = id;
-            }
+            server_cmd("pb remove #%d", get_user_userid(botIds[team][bots[team] - 1 - i]));
+            freeSlots++;
+            changed++;
+        }
+
+        for (new i = 0; i < delta && freeSlots > 0; i++)
+        {
+            server_cmd("pb add %d 1 %d 5", random_num(minSkill, maxSkill), team);
+            freeSlots--;
+            changed++;
         }
     }
 
-    if (abs(tPlayers - ctPlayers) < 2)
-        return;
-
-    new targetTeam;
-    new botToRemove;
-    if (tPlayers > ctPlayers)
-    {
-        targetTeam = 2;
-        botToRemove = tBot;
-    }
-    else
-    {
-        targetTeam = 1;
-        botToRemove = ctBot;
-    }
-
-    if (botToRemove)
-    {
-        server_cmd("pb remove #%d", get_user_userid(botToRemove));
-        return;
-    }
-
-    new minSkill = get_cvar_num("pb_minbotskill");
-    new maxSkill = get_cvar_num("pb_maxbotskill");
-    server_cmd("pb add %d 1 %d 5", (minSkill + maxSkill) / 2, targetTeam);
+    if (changed)
+        g_fSettleUntil = get_gametime() + SETTLE_SECONDS;
 }
 
 public handle_say(id)

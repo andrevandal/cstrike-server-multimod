@@ -1,4 +1,5 @@
 #include <amxmodx>
+#include <amxmisc>
 
 // Graceful restart. The entrypoint wrapper touches DRAIN_FLAG on SIGTERM
 // (Coolify/compose redeploy). This plugin then:
@@ -46,7 +47,8 @@ public checkDrainFlag()
 
     g_draining = true;
 
-    if (get_playersnum(1) == 0)
+    // get_playersnum() counts bots too; the server is "empty" with only bots left.
+    if (get_playersnum_ex(GetPlayers_ExcludeBots) == 0)
     {
         server_cmd("quit");
         return;
