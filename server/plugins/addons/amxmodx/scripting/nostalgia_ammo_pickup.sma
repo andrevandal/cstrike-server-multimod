@@ -3,7 +3,7 @@
 #include <reapi>
 
 #define PLUGIN "Nostalgia Ammo Pickup"
-#define VERSION "1.0.0"
+#define VERSION "1.1.0"
 #define AUTHOR "cstrike-server-multimod"
 
 public plugin_init()
@@ -21,11 +21,14 @@ public OnWeaponBoxTouch(const weaponbox, const id)
     if (!isAmmoPickupWeapon(weapon))
         return HAM_IGNORED;
 
+    if (!user_has_weapon(id, _:weapon))
+        return HAM_IGNORED;
+
     new maxAmmo = rg_get_weapon_info(weapon, WI_MAX_ROUNDS);
     if (maxAmmo <= 0)
         return HAM_IGNORED;
 
-    // A dropped firearm becomes a full reserve-ammo pickup, even when its clip is empty.
+    // A dropped copy of a weapon the player already carries becomes a full reserve-ammo pickup.
     rg_set_user_bpammo(id, weapon, maxAmmo);
     set_entvar(weaponbox, var_nextthink, get_gametime() + 0.01);
     return HAM_SUPERCEDE;
