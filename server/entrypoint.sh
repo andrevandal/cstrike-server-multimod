@@ -139,6 +139,7 @@ link_state() {
   link_path "$STATE_DIR/amxx/vault" "$AMXX/data/vault"
   link_path "$STATE_DIR/banned.cfg" "$CSTRIKE/banned.cfg"
   link_path "$STATE_DIR/listip.cfg" "$CSTRIKE/listip.cfg"
+  link_path "$STATE_DIR/nostalgia-next-map" "$CSTRIKE/nostalgia-next-map"
   link_path "$LOGS_DIR/hlds" "$CSTRIKE/logs"
   link_path "$LOGS_DIR/amxx" "$AMXX/logs"
 }
@@ -198,6 +199,25 @@ render_mapcycle() {
   } > "$AMXX/configs/maps.ini"
 }
 
+# nostalgia_drain.sma saves the map voted during a drain in nostalgia-next-map
+# (linked into /state by link_state). It applies to this boot only: the file is
+# consumed either way, so a bad name or a map that vanished since the vote can't
+# trap the server in a boot loop.
+resolve_start_map() {
+  local file="$STATE_DIR/nostalgia-next-map" map=""
+  [ -f "$file" ] || return 0
+  # The plugin writes no trailing newline: read returns 1 but still fills $map.
+  read -r map < "$file" || true
+  rm -f "$file"
+  map="${map//[[:space:]]/}"
+  if [[ "$map" =~ ^[A-Za-z0-9_.-]+$ ]] && [ -e "$CSTRIKE/maps/$map.bsp" ]; then
+    START_MAP="$map"
+    log "starting on the map voted before the restart: $map"
+  else
+    warn "ignoring saved next map '$map': invalid name or maps/$map.bsp is missing"
+  fi
+}
+
 check_plugins() {
   local ini list name
   for ini in "$AMXX/configs/plugins.ini" "$AMXX"/configs/maps/plugins-*.ini; do
@@ -211,13 +231,13 @@ check_plugins() {
 }
 
 # PID 1 stays this script so SIGTERM can start a drain instead of killing the
-# server at once. nostalgia_drain.sma watches DRAIN_FLAG, runs the countdown
-# and map vote, and quits on the next map. Docker's stop_grace_period is the
-# hard deadline (SIGKILL after it).
+# server at once. nostalgia_drain.sma watches DRAIN_FLAG, runs the map vote,
+# saves the winner for resolve_start_map and quits after a short countdown.
+# Docker's stop_grace_period is the hard deadline (SIGKILL after it).
 DRAIN_FLAG="$CSTRIKE/nostalgia-drain"
 
 request_drain() {
-  log "SIGTERM received: draining; server exits after the next map loads"
+  log "SIGTERM received: draining; server exits after the map vote and a short countdown"
   touch "$DRAIN_FLAG"
 }
 
@@ -253,6 +273,7 @@ main() {
   link_state
   link_content
   render_mapcycle
+  resolve_start_map
   check_plugins
 
   if [ "$(id -u)" = "0" ] && id "$RUN_AS" >/dev/null 2>&1; then
