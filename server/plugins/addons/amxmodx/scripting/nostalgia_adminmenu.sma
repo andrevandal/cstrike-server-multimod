@@ -449,6 +449,7 @@ ShowPlayersMenu(id)
     menu_additem(menu, "Menu de Banimento (Ban)", "2", ADMIN_BAN);
     menu_additem(menu, "Menu de Slap / Slay", "3", ADMIN_SLAY);
     menu_additem(menu, "Menu de Troca de Time (Team)", "4", ADMIN_LEVEL_A);
+    menu_additem(menu, "Punicoes (Drogar, Cegar, Raio, Levitar...)", "5", ADMIN_SLAY);
 
     menu_setprop(menu, MPROP_EXITNAME, "Voltar ao Menu Principal");
     menu_display(id, menu, 0);
@@ -473,6 +474,7 @@ public HandlePlayersMenu(id, menu, item)
         case 2: client_cmd(id, "amx_banmenu");
         case 3: client_cmd(id, "amx_slapmenu");
         case 4: client_cmd(id, "amx_teammenu");
+        case 5: client_cmd(id, "amx_punishmenu");
     }
 
     return PLUGIN_HANDLED;
