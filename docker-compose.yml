@@ -10,6 +10,7 @@ services:
   cstrike:
     build: ./server
     restart: unless-stopped
+    stop_grace_period: 6m
     stdin_open: true
     tty: true
     environment:

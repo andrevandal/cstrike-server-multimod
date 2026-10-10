@@ -210,6 +210,40 @@ check_plugins() {
   done
 }
 
+# PID 1 stays this script so SIGTERM can start a drain instead of killing the
+# server at once. nostalgia_drain.sma watches DRAIN_FLAG, runs the countdown
+# and map vote, and quits on the next map. Docker's stop_grace_period is the
+# hard deadline (SIGKILL after it).
+DRAIN_FLAG="$CSTRIKE/nostalgia-drain"
+
+request_drain() {
+  log "SIGTERM received: draining; server exits after the next map loads"
+  touch "$DRAIN_FLAG"
+}
+
+run_server() {
+  rm -f "$DRAIN_FLAG"
+  trap request_drain TERM
+
+  # <&0 keeps the server console on stdin; background jobs of a non-interactive
+  # shell otherwise get /dev/null.
+  if [ "$(id -u)" = "0" ] && id "$RUN_AS" >/dev/null 2>&1; then
+    HOME="$(getent passwd "$RUN_AS" | cut -d: -f6)"
+    export HOME
+    setpriv --reuid="$RUN_AS" --regid="$RUN_AS" --init-groups "$@" <&0 &
+  else
+    "$@" <&0 &
+  fi
+  server_pid=$!
+
+  while :; do
+    rc=0
+    wait "$server_pid" || rc=$?
+    kill -0 "$server_pid" 2>/dev/null || break
+  done
+  exit "$rc"
+}
+
 main() {
   validate_env
   render_env_cfg
@@ -232,12 +266,7 @@ main() {
       +sv_lan 0 +maxplayers "$MAXPLAYERS" +sys_ticrate 1000 +map "$START_MAP"
   fi
 
-  if [ "$(id -u)" = "0" ] && id "$RUN_AS" >/dev/null 2>&1; then
-    HOME="$(getent passwd "$RUN_AS" | cut -d: -f6)"
-    export HOME
-    exec setpriv --reuid="$RUN_AS" --regid="$RUN_AS" --init-groups "$@"
-  fi
-  exec "$@"
+  run_server "$@"
 }
 
 main "$@"

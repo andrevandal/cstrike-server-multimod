@@ -55,5 +55,6 @@ The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 | Manual backup | `docker compose exec backup backup` |
 | Restore | `scripts/restore.sh backups/cs16-state-<ts>.tar.gz` (on Coolify: `CSTRIKE_CONTAINER=<name> scripts/restore.sh …`) |
 | Update engine/modules | `scripts/update-versions.sh` bumps the `ARG` pins in `server/Dockerfile` to the latest stable releases (ReHLDS, ReGameDLL, Metamod-r, ReAPI, Reunion, PodBot, newest AMXX 1.10 build, WHBlocker from the newest PluginyCS/BasePack release). Review the diff, `docker compose build cstrike`, boot it, check logs, commit |
+| Redeploy without surprise disconnects | Coolify/compose stop sends SIGTERM; the server drains: it announces the restart in chat, sound and center countdown, starts a Galileo map vote, and exits when the next map loads (300 s cap, `stop_grace_period: 6m` in compose). Empty server exits at once. Set Coolify *Advanced → Deployment → Auto deploy* to *Manual deployments only* to choose when to roll out. |
 
 Pinned engine and plugin-loader versions are `ARG`s at the top of `server/Dockerfile`.
