@@ -2,6 +2,7 @@
 #include <amxmisc>
 #include <cstrike>
 #include <reapi>
+#include <nostalgia_logic>
 
 #define PLUGIN "PodBot Admin"
 #define VERSION "1.3.0"
@@ -314,18 +315,8 @@ reconcileBots(const bool:force)
             humans[team]++;
     }
 
-    new total = max(get_pcvar_num(g_pCvarMinPlayers) - 1, 0) + humans[1] + humans[2];
     new size[3];
-    size[1] = total / 2;
-    size[2] = total / 2;
-    size[g_iBigTeam] += total % 2;
-
-    size[1] = max(size[1], humans[1]);
-    size[2] = max(size[2], humans[2]);
-    if (size[1] - size[2] >= 2)
-        size[2] = size[1] - 1;
-    else if (size[2] - size[1] >= 2)
-        size[1] = size[2] - 1;
+    nl_team_sizes(get_pcvar_num(g_pCvarMinPlayers), humans[1], humans[2], g_iBigTeam, size[1], size[2]);
 
     new minSkill = get_cvar_num("pb_minbotskill");
     new maxSkill = max(get_cvar_num("pb_maxbotskill"), minSkill);

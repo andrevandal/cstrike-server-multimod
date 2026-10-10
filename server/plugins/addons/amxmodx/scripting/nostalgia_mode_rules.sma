@@ -1,5 +1,6 @@
 #include <amxmodx>
 #include <reapi>
+#include <nostalgia_logic>
 
 #define PLUGIN "Nostalgia Mode Rules"
 #define VERSION "1.1.0"
@@ -33,7 +34,7 @@ public applyModeRules()
     new map[32];
     get_mapname(map, charsmax(map));
 
-    if (equali(map, "cs_", 3) || equali(map, "de_", 3))
+    if (nl_is_classic_map(map))
     {
         setClassicRules();
     }
