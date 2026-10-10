@@ -1,12 +1,26 @@
 #include <amxmodx>
+#include <reapi>
 
 #define PLUGIN "Nostalgia Mode Rules"
-#define VERSION "1.0.0"
+#define VERSION "1.1.0"
 #define AUTHOR "cstrike-server-multimod"
 
 public plugin_init()
 {
     register_plugin(PLUGIN, VERSION, AUTHOR);
+    RegisterHookChain(RG_CBasePlayer_DropIdlePlayer, "OnDropIdlePlayer");
+}
+
+// ReGameDLL kicks players idle for max(mp_roundtime, 60 s) * 2 ("Player idle").
+// Full admins (ADMIN_BAN, which moderators lack) are exempt.
+public OnDropIdlePlayer(const id, const reason[])
+{
+    if (get_user_flags(id) & ADMIN_BAN)
+    {
+        return HC_SUPERCEDE;
+    }
+
+    return HC_CONTINUE;
 }
 
 public plugin_cfg()
