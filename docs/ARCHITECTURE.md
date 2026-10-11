@@ -86,6 +86,8 @@ Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`,
 **Galileo** (end-of-map vote, `rtv` at 51%, `nominate`), `bullet_damage`, `say_resetscore` (`/rs`), `sank_sounds` (keywords in `configs/SND-LIST.CFG`).
 `mapchooser.amxx` and `nextmap.amxx` are disabled because Galileo replaces them; `restmenu.amxx` stays disabled because it prevents PodBot from selecting a team.
 
+**Buy ammo.** Any gun bought from the shop (classic, DM/TDM and other modes where buying is enabled) arrives with a full clip and reserve. `nostalgia_buy_ammo` runs a post-hook on ReAPI `RG_BuyWeaponByWeaponID` and fills only a newly acquired weapon; re-buying a gun already held is an ammo refill handled by `BuyGunAmmo`. Floor pickups are unchanged (`nostalgia_ammo_pickup`).
+
 **In-game admin menu.** `nostalgia_adminmenu.amxx` provides a fast, categorized radio-style menu triggered via
 chat `say /admin` or `say /menu` (or console `adminmenu`): submenus for Bots (`pb add`, `pb fillserver`, difficulty cycle),
 Match Control (`sv_restart`, `mp_friendlyfire`, `sv_alltalk`, `mp_freezetime`, pause), Fun Cvars (`sv_gravity`), Maps/RTV
