@@ -1,6 +1,7 @@
 #include <amxmodx>
 #include <hamsandwich>
 #include <reapi>
+#include <nostalgia_weapons>
 
 #define PLUGIN "Nostalgia Ammo Pickup"
 #define VERSION "1.1.0"
@@ -18,7 +19,7 @@ public OnWeaponBoxTouch(const weaponbox, const id)
         return HAM_IGNORED;
 
     new WeaponIdType:weapon = rg_get_weaponbox_id(weaponbox);
-    if (!isAmmoPickupWeapon(weapon))
+    if (!nw_is_ammo_weapon(weapon))
         return HAM_IGNORED;
 
     if (!user_has_weapon(id, _:weapon))
@@ -32,21 +33,4 @@ public OnWeaponBoxTouch(const weaponbox, const id)
     rg_set_user_bpammo(id, weapon, maxAmmo);
     set_entvar(weaponbox, var_nextthink, get_gametime() + 0.01);
     return HAM_SUPERCEDE;
-}
-
-bool:isAmmoPickupWeapon(const WeaponIdType:weapon)
-{
-    switch (weapon)
-    {
-        case WEAPON_P228, WEAPON_SCOUT, WEAPON_XM1014, WEAPON_MAC10, WEAPON_AUG,
-             WEAPON_ELITE, WEAPON_FIVESEVEN, WEAPON_UMP45, WEAPON_SG550, WEAPON_GALIL,
-             WEAPON_FAMAS, WEAPON_USP, WEAPON_GLOCK18, WEAPON_AWP, WEAPON_MP5N, WEAPON_M249,
-             WEAPON_M3, WEAPON_M4A1, WEAPON_TMP, WEAPON_G3SG1, WEAPON_DEAGLE, WEAPON_SG552,
-             WEAPON_AK47, WEAPON_P90:
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
