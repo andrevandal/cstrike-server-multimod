@@ -8,7 +8,7 @@ de_dust2_2x2 https://gamebanana.com/dl/309832
 de_inferno2x2 https://gamebanana.com/dl/405210
 cs_rio https://gamebanana.com/dl/1052733
 cs_chaves https://gamebanana.com/dl/274494
-# cs_chaves references models\!uplant1.mdl; server/plugins/assets/models/!uplant1.mdl (HL's uplant1.mdl) satisfies it.
+# cs_chaves references models\!uplant1.mdl and its texture companion models\!uplant1T.mdl; server/plugins/assets/models/ ships both (HL's uplant1.mdl / uplant1t.mdl).
 gg_lego https://gamebanana.com/dl/553208
 gg_mini_dust2 https://gamebanana.com/dl/372636
 fy_pool_day https://gamebanana.com/dl/616976

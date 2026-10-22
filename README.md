@@ -2,7 +2,7 @@
 
 The classic LAN house atmosphere of the 2000s: a Counter-Strike 1.6 server (ReHLDS + ReGameDLL + Metamod-r + AMX Mod X)
 where the **map prefix picks the game mode**: classic (`de_`/`cs_`), GunGame (`gg_`), floor weapons (`fy_`/`aim_`/`awp_`),
-and Zombie Plague (`zm_`). Players get RTV, nominations and vote kick/ban.
+and Zombie Plague (`zm_`, installed but out of the default rotation). Players get RTV, nominations and vote kick/ban.
 
 The full design is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 

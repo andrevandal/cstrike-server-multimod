@@ -80,7 +80,7 @@ Changing mode = changing map: end-of-map vote, `rtv`, `amx_votemap`, or an admin
 | `cs_` | cs_assault, cs_rio, cs_chaves | miscstats, backweapons, gp_grenadetrail, nostalgia_parachute | auto-bhop |
 | `gg_` | gg_lego, gg_mini_dust2 | ReGG (regg_core + modules), miscstats, gp_grenadetrail | no freeze/buy/money, infinite round, no time limit |
 | `fy_` `aim_` `awp_` | fy_pool_day, fy_iceworld, aim_aztec, awp_india | miscstats, nostalgia_vampire, backweapons, gp_grenadetrail, nostalgia_parachute | no freeze, no buy, 1.5 min rounds, auto-bhop |
-| `zm_` | zm_toxic_house_b, zm_ice_attack, zm_dust2_final | Zombie Plague Special 4.5 (core, classes, extra modes), gp_grenadetrail, nostalgia_parachute | 3 min rounds, no freeze, no buy, auto-bhop |
+| `zm_` | zm_toxic_house_b, zm_ice_attack, zm_dust2_final (not in `mapcycle.all.txt`; reachable via `amx_map`/map menu) | Zombie Plague Special 4.5 (core, classes, extra modes), gp_grenadetrail, nostalgia_parachute | 3 min rounds, no freeze, no buy, auto-bhop |
 
 Global plugins (every map): AMXX core and menus, `adminvote`, `statsx` (`/rank`, `/top15`),
 **Galileo** (end-of-map vote, `rtv` at 51%, `nominate`), `bullet_damage`, `say_resetscore` (`/rs`), `sank_sounds` (keywords in `configs/SND-LIST.CFG`).
